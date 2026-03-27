@@ -25,14 +25,6 @@ A Model Context Protocol (MCP) server implementation for FIU AI services.
 
 ![](./演示效果/提示词样例.png)
 
-### A股效果
-#### 启动A股MCP
-![](./演示效果/A股-启动MCP.png)
-
-#### A股演示
-![](./演示效果/A股-贵州茅台怎么样.png)
-
-
 ### 港股效果
 #### 启动港股MCP
 
@@ -102,26 +94,6 @@ To use the FIU MCP Server, you need to have a Variflight API key. You can get it
 
 详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CN8MwG0JhsQP6m0wFm?scode=AFgAVQd2AAs4cJBJ49AbgA3gZ5AK0)
 
-### A股市场f10 MCP
-``` json
-{
-    "mcpServers": {
-        "stockCnF10": {
-            "description": "A股市场F10数据",
-            "transport": "streamable_http",
-            "url": "https://mcp.szfiu.com/stock_cn_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
-    }
-}
-```
-
-查询A股市场f10数据, 包括:公司简况,财务, 基础信息等类型数据.
-
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNIm8zMODNTve7jgwV?scode=AFgAVQd2AAs3Et01DwAbgA3gZ5AK0)
-
 ### 港股市场SDK Mcp
 ``` json
 {
@@ -162,26 +134,6 @@ To use the FIU MCP Server, you need to have a Variflight API key. You can get it
 
 详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNAogSqbT4RnGImtJf?scode=AFgAVQd2AAsttfxFnjAbgA3gZ5AK0)
 
-### A股市场SDK Mcp
-``` json
-{
-    "mcpServers": {
-        "stockCnSdk": {
-            "description": "A股市场SDK数据",
-            "transport": "streamable_http",
-            "url": "https://mcp.szfiu.com/stock_cn_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
-    }
-}
-```
-
-查询A股市场数据, 包括: 码表, 大盘统计, 盘口数据, 资金分析,排行榜,图表K线, 行业数据,指数信息, 沪深港股通, 衍生品, 筹码分布等类型数据.
-
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNkjJRr16kQvuskS5l?scode=AFgAVQd2AAsp0HxePhAbgA3gZ5AK0)
-
 ### FIU Toolkit Mcp
 ``` json
 {
@@ -218,13 +170,6 @@ To use the FIU MCP Server, you need to have a Variflight API key. You can get it
                 "Authorization": "Bearer {api_key}"
             }
         },
-        "stockCnF10": {
-            "transport": "streamable_http",
-            "url": "https://mcp.szfiu.com/stock_cn_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
         "stockHkSdk": {
             "transport": "streamable_http",
             "url": "https://mcp.szfiu.com/stock_hk_sdk/",
@@ -235,13 +180,6 @@ To use the FIU MCP Server, you need to have a Variflight API key. You can get it
         "stockUsSdk": {
             "transport": "streamable_http",
             "url": "https://mcp.szfiu.com/stock_us_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockCnSdk": {
-            "transport": "streamable_http",
-            "url": "https://mcp.szfiu.com/stock_cn_sdk/",
             "headers": {
                 "Authorization": "Bearer {api_key}"
             }
@@ -272,13 +210,6 @@ To use the FIU MCP Server, you need to have a Variflight API key. You can get it
                 "Authorization": "Bearer {api_key}"
             }
         },
-        "stockCnF10SSE": {
-            "transport": "streamable_http",
-            "url": "https://mcp.szfiu.com/sse/stock_cn_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
         "stockHkSdkSSE": {
             "transport": "streamable_http",
             "url": "https://mcp.szfiu.com/sse/stock_hk_sdk/",
@@ -289,13 +220,6 @@ To use the FIU MCP Server, you need to have a Variflight API key. You can get it
         "stockUsSdkSSE": {
             "transport": "streamable_http",
             "url": "https://mcp.szfiu.com/sse/stock_us_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockCnSdkSSE": {
-            "transport": "streamable_http",
-            "url": "https://mcp.szfiu.com/sse/stock_cn_sdk/",
             "headers": {
                 "Authorization": "Bearer {api_key}"
             }
