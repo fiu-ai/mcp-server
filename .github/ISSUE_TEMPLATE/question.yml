@@ -1,0 +1,33 @@
+name: ❓ Question / Help
+description: Ask a question or get help
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? Need help? Fill out the form below and we'll get back to you.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: How do I...?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What have you tried so far? What's your setup?
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - Usage question
+        - Configuration help
+        - Integration question
+        - Other
+    validations:
+      required: true
