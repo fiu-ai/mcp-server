@@ -1,342 +1,218 @@
-## FIU MCP Server
-A Model Context Protocol (MCP) server implementation for FIU AI services.
+# FIU MCP Server
 
-深圳市融聚汇信息科技有限公司，提供全球金融市场行情数据，同时一站式提供上市公司基本面信息、新闻舆情，帮助深入研究、跟踪各类投资标的动态，以及进行指标分析和量化策略回测。
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![MCP Protocol](https://img.shields.io/badge/MCP-Streamable%20HTTP%20%7C%20SSE-green)](https://modelcontextprotocol.io)
+[![Markets](https://img.shields.io/badge/Markets-A%E8%82%A1%20%7C%20%E6%B8%AF%E8%82%A1%20%7C%20%E7%BE%8E%E8%82%A1-orange)](#available-mcp-servers)
 
+> 一站式金融市场数据 MCP Server — 覆盖 A 股、港股、美股的实时行情、F10 基本面、新闻舆情与量化分析数据。
 
-## Openclaw使用效果
-1. 让openclaw 安装 find-skills;
-2. 和openclaw说: "如何给你配置新的mcp 工具,我有一些股票mcp工具?";
-3. 然后将mcp服务配置告诉openclaw, 让它自动配置.
- 
-### 效果(演示钉钉机器人+openclaw使用mcp的情况)
-![](./演示效果/openclaw/openclaw_fiu_mcp_list.jpg)
-![](./演示效果/openclaw/openclaw_fiu_mcp_q1.jpg)
+[中文文档](#中文快速开始) | [English Quick Start](#english-quick-start) | [API Documentation](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNpjKCSFZ6TuOKiTNO) | [Get API Key](https://ai.szfiu.com/login)
 
-![](./演示效果/openclaw/openclaw_fiu_mcp_q2_1.jpg)
-![](./演示效果/openclaw/openclaw_fiu_mcp_q2_2.jpg)
+---
 
-![](./演示效果/openclaw/openclaw_fiu_mcp_q2_3.jpg)
-![](./演示效果/openclaw/openclaw_fiu_mcp_q2_4.jpg)
+## ✨ Features
 
-## cherry-studio使用效果
+- **🌏 三大市场覆盖** — A 股、港股、美股全市场数据
+- **📊 F10 基本面** — 公司简况、财务报表、基础信息、基金持仓
+- **📈 SDK 深度数据** — 盘口、资金流向、筹码分布、K 线图表、行业排行
+- **🔍 智能代码检索** — 自然语言搜索证券代码，自动匹配市场
+- **🔌 双传输协议** — 同时支持 Streamable HTTP 和 SSE
+- **🤖 AI-Native** — 专为 Cherry Studio、OpenClaw 等 AI 助手设计
 
-配置助手提示词
+---
 
-![](./演示效果/提示词样例.png)
+## English Quick Start
 
-### A股效果
-#### 启动A股MCP
-![](./演示效果/A股-启动MCP.png)
+### 1. Get Your API Key
 
-#### A股演示
-![](./演示效果/A股-贵州茅台怎么样.png)
+Register at [https://ai.szfiu.com/login](https://ai.szfiu.com/login) and generate a JWT token.
 
+### 2. Configure Your MCP Client
 
-### 港股效果
-#### 启动港股MCP
+Add the following to your MCP client configuration (e.g., Cherry Studio, Claude Desktop):
 
-![](./演示效果/港股-启动MCP.png)
-
-#### 港股演示
-![](./演示效果/港股-腾讯怎么样.png)
-
-### 美股效果
-#### 启动美股MCP
-
-![](./演示效果/美股-启动MCP.png)
-
-#### 美股演示
-![](./演示效果/美股-查询苹果公司利润表.png)
-
-## 免费获取 API Key
-申请即可使用
-
-To use the FIU MCP Server, you need to have a Variflight API key. You can get it from [https://ai.szfiu.com/login](https://ai.szfiu.com/login).
-
-![](./pic/szfiu-mcp-jwt-index.png)
-
-![](./pic/szfiu-mcp-signin-signup.png)
-
-![](./pic/szfiu-mcp-jwt-list.png)
-
-## Available Tools
-### 港股市场f10 MCP
-
-``` json
+```json
 {
-    "mcpServers": {
-        "stockHkF10": {
-            "description": "港股市场F10数据",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_hk_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
+  "mcpServers": {
+    "fiu-cn-f10": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-hk-f10": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_hk_f10/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-us-f10": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_us_f10/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-toolkit": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/toolkit/"
     }
+  }
 }
 ```
 
-查询港股市场f10数据, 包括:公司简况,财务, 基础信息,基金等类型数据.
+### 3. Start Using
 
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNpjKCSFZ6TuOKiTNO?scode=AFgAVQd2AAsnhq3NL2AbgA3gZ5AK0)
+Ask your AI assistant natural questions like:
+- "How did Tencent perform last quarter?"
+- "Show me Kweichow Moutai's financial summary"
+- "What's Apple's latest profit margin?"
 
-### 美股市场f10 MCP
-``` json
+> 💡 **Tip:** Add the [time MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/time) so the AI can pass accurate date parameters.
+
+---
+
+## 中文快速开始
+
+### 1. 获取 API Key
+
+前往 [https://ai.szfiu.com/login](https://ai.szfiu.com/login) 注册并生成 JWT Token。
+
+![获取 API Key](./pic/szfiu-mcp-jwt-index.png)
+
+### 2. 配置 MCP 客户端
+
+#### 方式一：JSON 配置（推荐）
+
+```json
 {
-    "mcpServers": {
-        "stockUsF10": {
-            "description": "美股市场F10数据",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_us_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
+  "mcpServers": {
+    "fiu-cn-f10": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-hk-f10": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_hk_f10/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-us-f10": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_us_f10/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-cn-sdk": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_cn_sdk/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-hk-sdk": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_hk_sdk/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-us-sdk": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/stock_us_sdk/",
+      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
+    },
+    "fiu-toolkit": {
+      "transport": "streamable_http",
+      "url": "https://ai.szfiu.com/api/mcp/toolkit/"
     }
+  }
 }
 ```
 
-查询美股市场f10数据, 包括:公司简况,财务, 基础信息,基金等类型数据.
+#### 方式二：SSE 传输协议
 
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CN8MwG0JhsQP6m0wFm?scode=AFgAVQd2AAs4cJBJ49AbgA3gZ5AK0)
-
-### A股市场f10 MCP
-``` json
-{
-    "mcpServers": {
-        "stockCnF10": {
-            "description": "A股市场F10数据",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
-    }
-}
+将 URL 中的 `/api/mcp/` 替换为 `/api/mcp/sse/` 即可，例如：
+```
+https://ai.szfiu.com/api/mcp/sse/stock_cn_f10/
 ```
 
-查询A股市场f10数据, 包括:公司简况,财务, 基础信息等类型数据.
+#### 方式三：Cherry Studio 手动添加
 
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNIm8zMODNTve7jgwV?scode=AFgAVQd2AAs3Et01DwAbgA3gZ5AK0)
+![Cherry Studio 添加方式](./pic/cherry-studio-add-mcp.png)
 
-### 港股市场SDK Mcp
-``` json
-{
-    "mcpServers": {
-        "stockHkSdk": {
-            "description": "港股市场SDK数据",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_hk_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
-    }
-}
+或 [通过 JSON 导入](./Cherry-Studio.md)。
+
+### 3. 推荐 System Prompt
+
+```
+你是金融助手。
+- 查询数据前，请先使用 toolkit 确认证券代码
+- 使用 MCP 工具查询实时数据，分析用户问题
+- 建议搭配 time MCP server 获取当前日期
 ```
 
-查询港股市场数据, 包括: 基础数据, 码表, 大盘统计, 盘口数据, 资金分析,排行榜,图表K线, 行业数据,指数信息, 沪深港股通, 衍生品, 筹码分布, 衍生品等类型数据.
+---
 
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNSuAFX22uSE0M3H4P?scode=AFgAVQd2AAsz4Ilf6eAbgA3gZ5AK0) 
+## Available MCP Servers
 
-### 美股市场SDK Mcp
-``` json
-{
-    "mcpServers": {
-        "stockUsSdk": {
-            "description": "美股市场SDK数据",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_us_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
-    }
-}
-```
+| Server | Market | Description | Endpoint |
+|--------|--------|-------------|----------|
+| `stockCnF10` | A 股 | F10 基本面（公司简况、财务、基础信息） | `/api/mcp/stock_cn_f10/` |
+| `stockHkF10` | 港股 | F10 基本面（公司简况、财务、基金持仓） | `/api/mcp/stock_hk_f10/` |
+| `stockUsF10` | 美股 | F10 基本面（公司简况、财务、基础信息） | `/api/mcp/stock_us_f10/` |
+| `stockCnSdk` | A 股 | SDK 深度数据（盘口、资金流、K 线、筹码） | `/api/mcp/stock_cn_sdk/` |
+| `stockHkSdk` | 港股 | SDK 深度数据（盘口、资金流、K 线、筹码） | `/api/mcp/stock_hk_sdk/` |
+| `stockUsSdk` | 美股 | SDK 深度数据（盘口、资金流、K 线、筹码） | `/api/mcp/stock_us_sdk/` |
+| `szfiuToolkit` | 全市场 | 证券代码检索工具 | `/api/mcp/toolkit/` |
 
-查询美股市场数据, 包括: 基础数据, 码表, 大盘统计, 盘口数据, 资金分析,排行榜,图表K线, 行业数据,指数信息, 沪深港股通, 衍生品, 筹码分布, 衍生品等类型数据.
+> 📋 **完整工具列表：**
+> - [A 股 F10 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNIm8zMODNTve7jgwV)
+> - [港股 F10 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNpjKCSFZ6TuOKiTNO)
+> - [美股 F10 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CN8MwG0JhsQP6m0wFm)
+> - [A 股 SDK 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNkjJRr16kQvuskS5l)
+> - [港股 SDK 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNSuAFX22uSE0M3H4P)
+> - [美股 SDK 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNAogSqbT4RnGImtJf)
 
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNAogSqbT4RnGImtJf?scode=AFgAVQd2AAsttfxFnjAbgA3gZ5AK0)
+---
 
-### A股市场SDK Mcp
-``` json
-{
-    "mcpServers": {
-        "stockCnSdk": {
-            "description": "A股市场SDK数据",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_cn_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        }
-    }
-}
-```
+## Demo Screenshots
 
-查询A股市场数据, 包括: 码表, 大盘统计, 盘口数据, 资金分析,排行榜,图表K线, 行业数据,指数信息, 沪深港股通, 衍生品, 筹码分布等类型数据.
+### OpenClaw + 钉钉机器人
 
-详情请见:[工具列表](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNkjJRr16kQvuskS5l?scode=AFgAVQd2AAsp0HxePhAbgA3gZ5AK0)
+![OpenClaw MCP List](./演示效果/openclaw/openclaw_fiu_mcp_list.jpg)
+![OpenClaw Query 1](./演示效果/openclaw/openclaw_fiu_mcp_q1.jpg)
+![OpenClaw Query 2](./演示效果/openclaw/openclaw_fiu_mcp_q2_1.jpg)
 
-### FIU Toolkit Mcp
-``` json
-{
-    "mcpServers": {
-        "szfiuToolkit": {
-            "description": "FIU检索证券代码服务",
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/toolkit/"
-        }
-    }
-}
-```
+### Cherry Studio — A 股
 
-里面有检索证券代码的工具.
+![A 股启动 MCP](./演示效果/A股-启动MCP.png)
+![贵州茅台分析](./演示效果/A股-贵州茅台怎么样.png)
 
-## Usage
+### Cherry Studio — 港股
 
-### 标准json配置:
-#### 传输方式: streamable http
-``` json
-{
-    "mcpServers": {
-        "stockHkF10": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_hk_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockUsF10": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_us_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockCnF10": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockHkSdk": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_hk_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockUsSdk": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_us_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockCnSdk": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/stock_cn_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "szfiuToolkit": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/toolkit/"
-        }
-    }
-}
-```
+![港股启动 MCP](./演示效果/港股-启动MCP.png)
+![腾讯控股查询](./演示效果/港股-腾讯怎么样.png)
 
-#### 传输方式: sse
-``` json
-{
-    "mcpServers": {
-        "stockHkF10SSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/stock_hk_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockUsF10SSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/stock_us_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockCnF10SSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/stock_cn_f10/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockHkSdkSSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/stock_hk_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockUsSdkSSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/stock_us_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "stockCnSdkSSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/stock_cn_sdk/",
-            "headers": {
-                "Authorization": "Bearer {api_key}"
-            }
-        },
-        "szfiuToolkitSSE": {
-            "transport": "streamable_http",
-            "url": "https://ai.szfiu.com/api/mcp/sse/toolkit/"
-        }
-    }
-}
-```
+### Cherry Studio — 美股
 
-### 在cherry-studio中使用
-1. 手动添加
+![美股启动 MCP](./演示效果/美股-启动MCP.png)
+![苹果利润表查询](./演示效果/美股-查询苹果公司利润表.png)
 
-   - ![手动添加方式](./pic/cherry-studio-add-mcp.png)   
+---
 
-2. json导入方式.
+## ⚠️ Important Notes
 
-   - [cherry-studio 通过json配置导入服务](./Cherry-Studio.md)
+1. **URL trailing slash** — All endpoint URLs must end with `/`
+2. **API Key** — Replace `YOUR_API_KEY` with your actual JWT token
+3. **Enable tools selectively** — Only enable the MCP servers you need
+4. **Stock codes** — Use `szfiuToolkit` to look up correct security codes before querying
+5. **Time awareness** — AI models may have outdated internal dates; add the [time MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/time) for accurate date parameters
 
-## 智能助手
+---
 
-system prompt:
-``` shell
-你是金融助手
-- 今天是20250909
-- 查询数据前, 请先使用工具确认证券代码
-- 使用工具查询实时数据 分析用户问题:
-```
+## 🏢 About
 
-效果:
+**深圳市融聚汇信息科技有限公司**
 
-![详细分析贵州茅台](./演示效果/A股-详细分析贵州茅台600519.SH.png)
+提供全球金融市场行情数据，一站式上市公司基本面信息、新闻舆情，帮助深入研究、跟踪各类投资标的动态，以及进行指标分析和量化策略回测。
 
-![腾讯控股利润情况](./pic/usage_1.png)
+- 🌐 Website: [https://ai.szfiu.com](https://ai.szfiu.com)
+- 📧 Contact: [Get in touch](https://ai.szfiu.com/login)
 
-## 注意事项
-1. 填写配置, 注意url 需要 '/' 结尾;
-2. api_key 需要替换成自己的;
-3. 在工具中启用想要工具;
-4. 工具参数需要证券代码, 证券代码可以使用fiu检索证券代码查询;
-5. 大模型的时间可能是过去时间例如2023年, 建议增加一个[time服务](https://github.com/modelcontextprotocol/servers/tree/main/src/time), 让大模型model 获取当前时间, 并且将时间作为参数传递给工具;
-   - ![](./pic/time-mcp-server.png)
+---
+
+## 📄 License
+
+MIT License
