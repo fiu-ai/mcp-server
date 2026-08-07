@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-Streamable%20HTTP-green.svg)](https://modelcontextprotocol.io)
-[![Markets](https://img.shields.io/badge/Markets-HK%20%7C%20US%20%7C%20CN%20%7C%20JP%20%7C%20Global-orange.svg)](#available-toolsets)
+[![Markets](https://img.shields.io/badge/Markets-HK%20%7C%20US%20%7C%20CN%20%7C%20IPO%20%7C%20JP-orange.svg)](#available-toolsets)
 [![Toolsets](https://img.shields.io/badge/Toolsets-23-purple.svg)](docs/toolsets.md)
 
 > One MCP endpoint for Hong Kong, US, A-share, Japan and global fixed-income market data — quotes, order book, K-line, fundamentals, shareholding, IPO, ETF, options, news and reference data.
