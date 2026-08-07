@@ -1,67 +1,55 @@
-name: 🐛 Bug Report
-description: Report a bug or unexpected behavior
-title: "[Bug]: "
+name: Bug report / 问题反馈
+description: Something is wrong with the MCP server or its data
+title: "[Bug] "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug! Please fill out the following information.
+        Please do not paste your API key anywhere in this issue.
+        请不要在 issue 中粘贴 API Key。
+
   - type: input
-    id: version
+    id: client
     attributes:
-      label: Version
-      description: What version are you using?
-      placeholder: e.g., v1.0.0, latest
+      label: MCP client / 客户端
+      placeholder: Claude Code / Claude Desktop / Cherry Studio / Cursor / other
     validations:
       required: true
+
+  - type: input
+    id: toolset
+    attributes:
+      label: Toolset and endpoint / 工具集与 endpoint
+      placeholder: "f10_financials / get_financial_statement"
+    validations:
+      required: true
+
   - type: textarea
-    id: description
+    id: params
     attributes:
-      label: Bug Description
-      description: A clear and concise description of what the bug is.
-      placeholder: Describe what happened...
+      label: Parameters / 调用参数
+      description: The `params` object you sent, with the API key removed.
+      render: json
     validations:
       required: true
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: Steps to Reproduce
-      description: How can we reproduce this issue?
-      placeholder: |
-        1. Go to '...'
-        2. Run '...'
-        3. See error
-    validations:
-      required: true
+
   - type: textarea
     id: expected
     attributes:
-      label: Expected Behavior
-      description: What did you expect to happen?
+      label: Expected vs actual / 预期与实际
     validations:
       required: true
+
   - type: textarea
-    id: logs
+    id: error
     attributes:
-      label: Relevant Logs / Screenshots
-      description: Paste any error messages, logs, or screenshots.
-      render: shell
-  - type: dropdown
-    id: environment
+      label: Error payload / 错误返回
+      description: Include `requestId` if present — it is what lets us trace the call.
+      render: json
+
+  - type: input
+    id: time
     attributes:
-      label: Environment
-      description: What environment are you using?
-      options:
-        - Linux
-        - macOS
-        - Windows
-        - Docker
-        - Other
-    validations:
-      required: true
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional Context
-      description: Add any other context about the problem here.
+      label: When did it happen / 发生时间
+      placeholder: "2026-08-06 14:30 UTC+8"

@@ -1,70 +1,90 @@
-# FIU MCP Server
+# FIU Finance MCP Server
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![MCP Protocol](https://img.shields.io/badge/MCP-Streamable%20HTTP%20%7C%20SSE-green)](https://modelcontextprotocol.io)
-[![Markets](https://img.shields.io/badge/Markets-A%E8%82%A1%20%7C%20%E6%B8%AF%E8%82%A1%20%7C%20%E7%BE%8E%E8%82%A1-orange)](#available-mcp-servers)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![MCP](https://img.shields.io/badge/MCP-Streamable%20HTTP-green.svg)](https://modelcontextprotocol.io)
+[![Markets](https://img.shields.io/badge/Markets-HK%20%7C%20US%20%7C%20CN%20%7C%20JP%20%7C%20Global-orange.svg)](#available-toolsets)
+[![Toolsets](https://img.shields.io/badge/Toolsets-23-purple.svg)](docs/toolsets.md)
 
-> 一站式金融市场数据 MCP Server — 覆盖 A 股、港股、美股的实时行情、F10 基本面、新闻舆情与量化分析数据。
+> One MCP endpoint for Hong Kong, US, A-share, Japan and global fixed-income market data — quotes, order book, K-line, fundamentals, shareholding, IPO, ETF, options, news and reference data.
 
-[中文文档](#中文快速开始) | [English Quick Start](#english-quick-start) | [API Documentation](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNpjKCSFZ6TuOKiTNO) | [Get API Key](https://ai.szfiu.com/login)
+[English](#english-quick-start) | [中文](#中文快速开始) | [Toolset Reference](docs/toolsets.md) | [Client Setup](docs/clients.md) | [Examples](docs/examples.md)
 
 ---
 
 ## ✨ Features
 
-- **🌏 三大市场覆盖** — A 股、港股、美股全市场数据
-- **📊 F10 基本面** — 公司简况、财务报表、基础信息、基金持仓
-- **📈 SDK 深度数据** — 盘口、资金流向、筹码分布、K 线图表、行业排行
-- **🔍 智能代码检索** — 自然语言搜索证券代码，自动匹配市场
-- **🔌 双传输协议** — 同时支持 Streamable HTTP 和 SSE
-- **🤖 AI-Native** — 专为 Cherry Studio、OpenClaw 等 AI 助手设计
+- 🌏 **Five markets, one endpoint** — HK, US, CN (A-share), JP and global bonds behind a single Streamable HTTP URL.
+- 🧰 **23 toolsets, 86 endpoints** — each toolset takes `{ endpoint, params }`, so the model picks a capability instead of memorising 86 tool names.
+- 🔎 **Self-describing** — `describe_tool` returns parameters, enums, market coverage and capability boundaries on demand, at three levels of detail.
+- 📊 **Depth beyond quotes** — financial statements, shareholding structure, capital flow, position cost, IPO subscription data and OPRA option chains.
+- 🛡️ **Validated at the gateway** — required fields, enums and market applicability are checked before the request leaves, so bad parameters come back as an actionable error instead of an empty result.
+- 🔌 **Client-agnostic** — works with Claude Code, Claude Desktop, Cherry Studio, Cursor, ChatWise and any MCP client that speaks Streamable HTTP.
 
 ---
 
 ## English Quick Start
 
-### 1. Get Your API Key
+### 1. Get your API key
 
-Register at [https://ai.szfiu.com/login](https://ai.szfiu.com/login) and generate a JWT token.
+Visit **http://ai.szfiu.com** and apply for an API key.
 
-### 2. Configure Your MCP Client
-
-Add the following to your MCP client configuration (e.g., Cherry Studio, Claude Desktop):
+### 2. Configure your MCP client
 
 ```json
 {
   "mcpServers": {
-    "fiu-cn-f10": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-hk-f10": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_hk_f10/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-us-f10": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_us_f10/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-toolkit": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/toolkit/"
+    "fiu-finance": {
+      "type": "streamableHttp",
+      "url": "http://ai.szfiu.com/api/mcp/v2",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
     }
   }
 }
 ```
 
-### 3. Start Using
+Claude Code, one command:
 
-Ask your AI assistant natural questions like:
-- "How did Tencent perform last quarter?"
-- "Show me Kweichow Moutai's financial summary"
-- "What's Apple's latest profit margin?"
+```bash
+claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
+  --header "Authorization: Bearer YOUR_API_KEY"
+```
 
-> 💡 **Tip:** Add the [time MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/time) so the AI can pass accurate date parameters.
+Per-client instructions are in [docs/clients.md](docs/clients.md).
+
+### 3. Start asking
+
+```text
+What is Tencent (00700.hk) trading at right now?
+Show me the last 60 daily candles for AAPL.
+Which Hong Kong IPOs are open for subscription this week?
+Pull Kweichow Moutai's latest income statement.
+```
+
+### 4. Call a tool directly
+
+Every business toolset takes the same two arguments:
+
+```json
+{
+  "endpoint": "get_quote",
+  "params": {
+    "market": "HK",
+    "assetType": "stock",
+    "symbols": ["00700.hk"]
+  }
+}
+```
+
+When you are unsure which `endpoint` or which fields apply, ask the server first:
+
+```json
+{
+  "toolNames": ["quote_kline", "get_kline"],
+  "detail": "params"
+}
+```
 
 ---
 
@@ -72,147 +92,132 @@ Ask your AI assistant natural questions like:
 
 ### 1. 获取 API Key
 
-前往 [https://ai.szfiu.com/login](https://ai.szfiu.com/login) 注册并生成 JWT Token。
-
-![获取 API Key](./pic/szfiu-mcp-jwt-index.png)
+访问 **http://ai.szfiu.com** 申请 API Key。
 
 ### 2. 配置 MCP 客户端
-
-#### 方式一：JSON 配置（推荐）
 
 ```json
 {
   "mcpServers": {
-    "fiu-cn-f10": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-hk-f10": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_hk_f10/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-us-f10": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_us_f10/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-cn-sdk": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_cn_sdk/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-hk-sdk": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_hk_sdk/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-us-sdk": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/stock_us_sdk/",
-      "headers": { "Authorization": "Bearer YOUR_API_KEY" }
-    },
-    "fiu-toolkit": {
-      "transport": "streamable_http",
-      "url": "https://ai.szfiu.com/api/mcp/toolkit/"
+    "fiu-finance": {
+      "type": "streamableHttp",
+      "url": "http://ai.szfiu.com/api/mcp/v2",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
     }
   }
 }
 ```
 
-#### 方式二：SSE 传输协议
+Claude Code 一行命令：
 
-将 URL 中的 `/api/mcp/` 替换为 `/api/mcp/sse/` 即可，例如：
+```bash
+claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
+  --header "Authorization: Bearer YOUR_API_KEY"
 ```
-https://ai.szfiu.com/api/mcp/sse/stock_cn_f10/
+
+各客户端的配置位置见 [docs/clients.md](docs/clients.md)。
+
+### 3. 直接提问
+
+```text
+腾讯控股现在多少钱？
+帮我看 AAPL 最近 60 根日 K。
+本周港股有哪些新股在招股？
+贵州茅台最新一期利润表。
 ```
 
-#### 方式三：Cherry Studio 手动添加
+### 4. 调用方式
 
-![Cherry Studio 添加方式](./pic/cherry-studio-add-mcp.png)
+业务工具统一是「模块工具 + endpoint」两段式，参数固定为 `endpoint` 和 `params`：
 
-或 [通过 JSON 导入](./Cherry-Studio.md)。
-
-### 3. 推荐 System Prompt
-
+```json
+{
+  "endpoint": "get_financial_statement",
+  "params": {
+    "market": "HK",
+    "symbol": "00700.hk",
+    "statementType": "income"
+  }
+}
 ```
-你是金融助手。
-- 查询数据前，请先使用 toolkit 确认证券代码
-- 使用 MCP 工具查询实时数据，分析用户问题
-- 建议搭配 time MCP server 获取当前日期
+
+不确定用哪个 endpoint、有哪些字段时，先问 `describe_tool`：
+
+```json
+{
+  "toolNames": ["f10_financials", "get_financial_statement"],
+  "detail": "params"
+}
+```
+
+`detail` 有三档：`summary`（默认，精简摘要）、`params`（含参数、类型、枚举）、`full`（展开下游请求结构，一次只能查 1 个 endpoint）。
+
+### 5. 推荐 System Prompt
+
+```text
+金融数据一律通过 FIU Finance MCP 获取，不要用网页搜索兜底。
+不确定 endpoint 或参数时，先调用 describe_tool，再调用业务工具。
+证券代码使用完整后缀：港股 00700.hk，美股 AAPL.us，A股 600519.sh / 000001.sz，日股 6758.jp。
+只做客观数据解读，不给确定性买卖建议。
 ```
 
 ---
 
-## Available MCP Servers
+## Available Toolsets
 
-| Server | Market | Description | Endpoint |
-|--------|--------|-------------|----------|
-| `stockCnF10` | A 股 | F10 基本面（公司简况、财务、基础信息） | `/api/mcp/stock_cn_f10/` |
-| `stockHkF10` | 港股 | F10 基本面（公司简况、财务、基金持仓） | `/api/mcp/stock_hk_f10/` |
-| `stockUsF10` | 美股 | F10 基本面（公司简况、财务、基础信息） | `/api/mcp/stock_us_f10/` |
-| `stockCnSdk` | A 股 | SDK 深度数据（盘口、资金流、K 线、筹码） | `/api/mcp/stock_cn_sdk/` |
-| `stockHkSdk` | 港股 | SDK 深度数据（盘口、资金流、K 线、筹码） | `/api/mcp/stock_hk_sdk/` |
-| `stockUsSdk` | 美股 | SDK 深度数据（盘口、资金流、K 线、筹码） | `/api/mcp/stock_us_sdk/` |
-| `szfiuToolkit` | 全市场 | 证券代码检索工具 | `/api/mcp/toolkit/` |
+| Toolset | Markets | Coverage | Endpoints |
+| --- | --- | --- | --- |
+| `describe_tool` | — | Tool, toolset and endpoint documentation on demand | — |
+| `quote_spot` | HK US CN JP GLOBAL | Security search, static profile, snapshot and extended quotes | 4 |
+| `quote_intraday` | HK US CN JP GLOBAL | Order book, tick-by-tick trades, intraday trend | 6 |
+| `quote_kline` | HK US CN JP GLOBAL | K-line, historical snapshots, return series | 3 |
+| `quote_derivatives_hk` | HK | Warrants and CBBC catalogue and trading data | 3 |
+| `quote_us_options` | US | OPRA option chain, quotes, Greeks, rankings, overview | 4 |
+| `market_overview` | HK US CN JP | Market and trading statistics | 1 |
+| `market_ranking` | HK US CN JP | Stock, industry, ETF, IPO, bond, broker and warrant rankings | 1 |
+| `market_flow` | HK US CN JP | Capital flow, flow distribution, N-day flow | 1 |
+| `market_structure` | HK US CN JP | Industries, indices, constituents, index mapping | 3 |
+| `market_position_cost` | HK US | Position cost range and chip distribution | 1 |
+| `f10_profile` | HK US CN | Company profile, overview, management | 3 |
+| `f10_financials` | HK US CN | Income, balance sheet, cash flow, financial indicators | 2 |
+| `f10_business_governance` | HK US CN | Business segments, dividends, splits, buybacks, suspensions | 2 |
+| `shareholding_structure` | HK US CN | Major and top-ten shareholders, holding changes | 2 |
+| `shareholding_institution` | US | Institutional holdings detail and statistics | 1 |
+| `shareholding_fund_broker` | HK US | Fund holdings, broker holdings, short selling | 3 |
+| `fund_etf` | HK US JP | Fund NAV, assets, performance, ETF list and constituents | 3 |
+| `stock_connect` | HK CN | Stock Connect quota, net turnover, rankings, holding ratio | 3 |
+| `ipo` | HK US | IPO calendar, offering detail, underwriters, cornerstones, margin, notices | 20 |
+| `bond_basic` | GLOBAL | Bond search, profile, snapshot, extended quote, order book | 4 |
+| `bond_analytics` | GLOBAL | Bond rankings, charts, yields, trading status | 4 |
+| `fiu_news` | HK US CN JP GLOBAL | News search, semantic search, per-symbol news, detail, statistics | 8 |
+| `reference` | HK US CN JP GLOBAL | ISIN, SEDOL, CIK, currency, trading sessions, symbol mapping | 4 |
 
-> 📋 **完整工具列表：**
-> - [A 股 F10 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNIm8zMODNTve7jgwV)
-> - [港股 F10 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNpjKCSFZ6TuOKiTNO)
-> - [美股 F10 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CN8MwG0JhsQP6m0wFm)
-> - [A 股 SDK 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNkjJRr16kQvuskS5l)
-> - [港股 SDK 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNSuAFX22uSE0M3H4P)
-> - [美股 SDK 工具](https://doc.weixin.qq.com/doc/w3_AbgA3gZ5AK0CNAogSqbT4RnGImtJf)
-
----
-
-## Demo Screenshots
-
-### OpenClaw + 钉钉机器人
-
-![OpenClaw MCP List](./演示效果/openclaw/openclaw_fiu_mcp_list.jpg)
-![OpenClaw Query 1](./演示效果/openclaw/openclaw_fiu_mcp_q1.jpg)
-![OpenClaw Query 2](./演示效果/openclaw/openclaw_fiu_mcp_q2_1.jpg)
-
-### Cherry Studio — A 股
-
-![A 股启动 MCP](./演示效果/A股-启动MCP.png)
-![贵州茅台分析](./演示效果/A股-贵州茅台怎么样.png)
-
-### Cherry Studio — 港股
-
-![港股启动 MCP](./演示效果/港股-启动MCP.png)
-![腾讯控股查询](./演示效果/港股-腾讯怎么样.png)
-
-### Cherry Studio — 美股
-
-![美股启动 MCP](./演示效果/美股-启动MCP.png)
-![苹果利润表查询](./演示效果/美股-查询苹果公司利润表.png)
+Full endpoint list with required parameters and enum values: **[docs/toolsets.md](docs/toolsets.md)**
 
 ---
 
 ## ⚠️ Important Notes
 
-1. **URL trailing slash** — All endpoint URLs must end with `/`
-2. **API Key** — Replace `YOUR_API_KEY` with your actual JWT token
-3. **Enable tools selectively** — Only enable the MCP servers you need
-4. **Stock codes** — Use `szfiuToolkit` to look up correct security codes before querying
-5. **Time awareness** — AI models may have outdated internal dates; add the [time MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/time) for accurate date parameters
+1. **Always send the API key.** `Authorization: Bearer YOUR_API_KEY` is required on every request. Without it the gateway returns `401 缺少认证头`; with a wrong key, `401 无效的令牌`.
+2. **Never put the key in `params`.** It belongs in the HTTP header only.
+3. **Use full symbol suffixes.** `00700.hk`, `AAPL.us`, `600519.sh`, `000001.sz`, `6758.jp`. Bonds accept an ISIN.
+4. **`CN` means the A-share market; `GLOBAL` does not.** `GLOBAL` routes to cross-market data — currently fixed income. Do not use `GLOBAL` for ordinary equities.
+5. **Describe before you call.** Most endpoints require a discriminator such as `ipoType`, `connectType` or `dataType`. `describe_tool` returns the legal values; guessing produces a validation error.
+6. **Announcements and research reports are out of scope.** F10 returns structured statements and events, not annual-report PDFs, disclosure full text or analyst reports. `fiu_news` covers news, not filings.
+7. **Add a time/date MCP server** if your model needs to resolve "today" or "this week" accurately before querying.
 
 ---
 
 ## 🏢 About
 
-**深圳市融聚汇信息科技有限公司**
+Built and operated by **深圳市融聚汇信息科技有限公司** (Shenzhen Rongjuhui Information Technology Co., Ltd.).
 
-提供全球金融市场行情数据，一站式上市公司基本面信息、新闻舆情，帮助深入研究、跟踪各类投资标的动态，以及进行指标分析和量化策略回测。
-
-- 🌐 Website: [https://ai.szfiu.com](https://ai.szfiu.com)
-- 📧 Contact: [Get in touch](https://ai.szfiu.com/login)
-
----
+- Service: http://ai.szfiu.com
+- MCP endpoint: `http://ai.szfiu.com/api/mcp/v2`
+- Issues: use the [issue templates](.github/ISSUE_TEMPLATE)
 
 ## 📄 License
 
-MIT License
+[MIT](LICENSE)

@@ -1,33 +1,37 @@
-name: ❓ Question / Help
-description: Ask a question or get help
-title: "[Question]: "
+name: Question / 使用咨询
+description: Ask about configuration, tool selection or parameters
+title: "[Question] "
 labels: ["question"]
 body:
   - type: markdown
     attributes:
       value: |
-        Have a question? Need help? Fill out the form below and we'll get back to you.
+        Before opening an issue, check [docs/clients.md](../../docs/clients.md) for setup
+        and [docs/toolsets.md](../../docs/toolsets.md) for parameters.
+        提问前请先查看客户端配置与工具集参数文档。
+
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic / 咨询方向
+      options:
+        - Connection and API key / 连接与鉴权
+        - Which toolset to use / 工具集选择
+        - Parameters and enums / 参数与枚举
+        - Data coverage / 数据覆盖范围
+        - Other / 其他
+    validations:
+      required: true
+
   - type: textarea
     id: question
     attributes:
-      label: Your Question
-      description: What would you like to know?
-      placeholder: How do I...?
+      label: Question / 问题
     validations:
       required: true
+
   - type: textarea
-    id: context
+    id: tried
     attributes:
-      label: Context
-      description: What have you tried so far? What's your setup?
-  - type: dropdown
-    id: type
-    attributes:
-      label: Type
-      options:
-        - Usage question
-        - Configuration help
-        - Integration question
-        - Other
-    validations:
-      required: true
+      label: What you already tried / 已尝试的操作
+      description: Including any `describe_tool` output you looked at.
