@@ -5,7 +5,7 @@
 [![Markets](https://img.shields.io/badge/Markets-HK%20%7C%20US%20%7C%20CN%20%7C%20IPO%20%7C%20JP-orange.svg)](#available-toolsets)
 [![Toolsets](https://img.shields.io/badge/Toolsets-23-purple.svg)](docs/toolsets.md)
 
-> One MCP endpoint for Hong Kong, US, A-share, Japan and global fixed-income market data — quotes, order book, K-line, fundamentals, shareholding, IPO, ETF, options, news and reference data.
+> One MCP endpoint for Hong Kong, US, A-share, IPO and Japan market data — quotes, order book, K-line, fundamentals, shareholding, IPO, ETF, options, news, reference data and fixed-income services.
 
 [English](#english-quick-start) | [中文](#中文快速开始) | [Toolset Reference](docs/toolsets.md) | [Client Setup](docs/clients.md) | [Examples](docs/examples.md)
 
@@ -13,7 +13,7 @@
 
 ## ✨ Features
 
-- 🌏 **Five markets, one endpoint** — HK, US, CN (A-share), JP and global bonds behind a single Streamable HTTP URL.
+- 🌏 **Five market categories, one endpoint** — HK, US, CN (A-share), IPO and JP behind a single Streamable HTTP URL. Bond calls use `market=GLOBAL`.
 - 🧰 **23 toolsets, 86 endpoints** — each toolset takes `{ endpoint, params }`, so the model picks a capability instead of memorising 86 tool names.
 - 🔎 **Self-describing** — `describe_tool` returns parameters, enums, market coverage and capability boundaries on demand, at three levels of detail.
 - 📊 **Depth beyond quotes** — financial statements, shareholding structure, capital flow, position cost, IPO subscription data and OPRA option chains.
@@ -170,13 +170,13 @@ claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
 | Toolset | Markets | Coverage | Endpoints |
 | --- | --- | --- | --- |
 | `describe_tool` | — | Tool, toolset and endpoint documentation on demand | — |
-| `quote_spot` | HK US CN JP GLOBAL | Security search, static profile, snapshot and extended quotes | 4 |
-| `quote_intraday` | HK US CN JP GLOBAL | Order book, tick-by-tick trades, intraday trend | 6 |
-| `quote_kline` | HK US CN JP GLOBAL | K-line, historical snapshots, return series | 3 |
+| `quote_spot` | HK US CN JP | Security search, static profile, snapshot and extended quotes | 4 |
+| `quote_intraday` | HK US CN JP | Order book, tick-by-tick trades, intraday trend | 6 |
+| `quote_kline` | HK US CN JP | K-line, historical snapshots, return series | 3 |
 | `quote_derivatives_hk` | HK | Warrants and CBBC catalogue and trading data | 3 |
 | `quote_us_options` | US | OPRA option chain, quotes, Greeks, rankings, overview | 4 |
 | `market_overview` | HK US CN JP | Market and trading statistics | 1 |
-| `market_ranking` | HK US CN JP | Stock, industry, ETF, IPO, bond, broker and warrant rankings | 1 |
+| `market_ranking` | HK US CN IPO JP | Stock, industry, ETF, IPO, bond, broker and warrant rankings | 1 |
 | `market_flow` | HK US CN JP | Capital flow, flow distribution, N-day flow | 1 |
 | `market_structure` | HK US CN JP | Industries, indices, constituents, index mapping | 3 |
 | `market_position_cost` | HK US | Position cost range and chip distribution | 1 |
@@ -188,11 +188,11 @@ claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
 | `shareholding_fund_broker` | HK US | Fund holdings, broker holdings, short selling | 3 |
 | `fund_etf` | HK US JP | Fund NAV, assets, performance, ETF list and constituents | 3 |
 | `stock_connect` | HK CN | Stock Connect quota, net turnover, rankings, holding ratio | 3 |
-| `ipo` | HK US | IPO calendar, offering detail, underwriters, cornerstones, margin, notices | 20 |
-| `bond_basic` | GLOBAL | Bond search, profile, snapshot, extended quote, order book | 4 |
-| `bond_analytics` | GLOBAL | Bond rankings, charts, yields, trading status | 4 |
-| `fiu_news` | HK US CN JP GLOBAL | News search, semantic search, per-symbol news, detail, statistics | 8 |
-| `reference` | HK US CN JP GLOBAL | ISIN, SEDOL, CIK, currency, trading sessions, symbol mapping | 4 |
+| `ipo` | IPO | IPO calendar, offering detail, underwriters, cornerstones, margin, notices | 20 |
+| `bond_basic` | Bond | Bond search, profile, snapshot, extended quote, order book; use `market=GLOBAL` | 4 |
+| `bond_analytics` | Bond | Bond rankings, charts, yields, trading status; use `market=GLOBAL` | 4 |
+| `fiu_news` | HK US CN JP | News search, semantic search, per-symbol news, detail, statistics | 8 |
+| `reference` | HK US CN JP | ISIN, SEDOL, CIK, currency, trading sessions, symbol mapping; bond refs use `market=GLOBAL` | 4 |
 
 Full endpoint list with required parameters and enum values: **[docs/toolsets.md](docs/toolsets.md)**
 
@@ -203,7 +203,7 @@ Full endpoint list with required parameters and enum values: **[docs/toolsets.md
 1. **Always send the API key.** `Authorization: Bearer YOUR_API_KEY` is required on every request. Without it the gateway returns `401 缺少认证头`; with a wrong key, `401 无效的令牌`.
 2. **Never put the key in `params`.** It belongs in the HTTP header only.
 3. **Use full symbol suffixes.** `00700.hk`, `AAPL.us`, `600519.sh`, `000001.sz`, `6758.jp`. Bonds accept an ISIN.
-4. **`CN` means the A-share market; `GLOBAL` does not.** `GLOBAL` routes to cross-market data — currently fixed income. Do not use `GLOBAL` for ordinary equities.
+4. **Market categories are `HK`, `US`, `CN`, `IPO` and `JP`.** Bond calls use `market=GLOBAL`; ordinary equities do not.
 5. **Describe before you call.** Most endpoints require a discriminator such as `ipoType`, `connectType` or `dataType`. `describe_tool` returns the legal values; guessing produces a validation error.
 6. **Announcements and research reports are out of scope.** F10 returns structured statements and events, not annual-report PDFs, disclosure full text or analyst reports. `fiu_news` covers news, not filings.
 7. **Add a time/date MCP server** if your model needs to resolve "today" or "this week" accurately before querying.
