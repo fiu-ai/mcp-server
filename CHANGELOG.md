@@ -18,7 +18,7 @@ The MCP surface is consolidated into a single endpoint.
 ### Changed
 
 - Tool naming moved from raw downstream operations to capability-oriented toolsets.
-- `reportType` filtering on financial statements is now documented per market: HK uses letters (`I`, `F`, `P`, `Q1`, `Q3`, `Q4`, `Q5`), A-share uses integers (`1`, `6`, `9`, `12`, `99`).
+- `reportType` filtering on financial statements is now documented per market: HK uses letters (`I`, `F`, `P`, `Q1`, `Q3`, `Q4`, `Q5`), A-share(Zhcall) uses integers (`1`, `6`, `9`, `12`, `99`).
 
 ## [1.0.2]
 
@@ -30,4 +30,4 @@ The MCP surface is consolidated into a single endpoint.
 
 ## [1.0.0]
 
-- Initial release with per-market MCP servers for A-share, Hong Kong and US.
+- Initial release with per-market MCP servers for A-share(Zhcall), Hong Kong and US.

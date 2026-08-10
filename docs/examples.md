@@ -93,7 +93,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 `sortType`: `1` descending (default), `0` ascending. `rankType`: `stock`, `industry`, `ipo`, `broker`, `market_premium`, `etf`, `hot_stock`.
 
-**Current capital flow (A-share)**
+**Current capital flow (A-share(Zhcall))**
 
 `market_flow`
 ```json
@@ -105,7 +105,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 `flowType`: `current`, `daily`, `distribution`, `index_distribution`, `totalview`.
 
-**Industry list (A-share)**
+**Industry list (A-share(Zhcall))**
 
 `market_structure`
 ```json
@@ -128,7 +128,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 ## Fundamentals
 
-**Company profile (A-share)**
+**Company profile (A-share(Zhcall))**
 
 `f10_profile`
 ```json
@@ -148,7 +148,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 }
 ```
 
-**Annual balance sheet (A-share)**
+**Annual balance sheet (A-share(Zhcall))**
 
 `f10_financials`
 ```json
@@ -158,9 +158,9 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 }
 ```
 
-`reportType` encoding differs by market — HK uses letters, A-share uses integers, US ignores the field. See [toolsets.md](toolsets.md#f10_financials--hk-us-cn).
+`reportType` encoding differs by market — HK uses letters, A-share(Zhcall) uses integers, US ignores the field. See [toolsets.md](toolsets.md#f10_financials--hk-us-cn).
 
-**Financial indicators (A-share)**
+**Financial indicators (A-share(Zhcall))**
 
 `f10_financials`
 ```json
@@ -181,7 +181,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 ## Shareholding
 
-**Major shareholders (HK) / top ten (A-share)**
+**Major shareholders (HK) / top ten (A-share(Zhcall))**
 
 `shareholding_structure`
 ```json

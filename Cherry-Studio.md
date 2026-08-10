@@ -48,7 +48,7 @@
         "stockCNF10": {
             "type": "streamableHttp",
             "url": "https://ai.szfiu.com/api/mcp/stock_cn_f10/",
-            "description": "A股市场F10数据",
+            "description": "A股(中华通)市场F10数据",
             "provider": "SZFIU",
             "providerUrl": "https://github.com/fiu-ai/mcp-server",
             "logoUrl": "https://www.szfiu.com/images/logo.png"
@@ -93,7 +93,7 @@
         "stockCNSdk": {
             "type": "streamableHttp",
             "url": "https://ai.szfiu.com/api/mcp/stock_cn_sdk/",
-            "description": "A股市场SDK数据",
+            "description": "A股(中华通)市场SDK数据",
             "provider": "SZFIU",
             "providerUrl": "https://github.com/fiu-ai/mcp-server",
             "logoUrl": "https://www.szfiu.com/images/logo.png"

@@ -5,7 +5,7 @@
 [![Markets](https://img.shields.io/badge/Markets-HK%20%7C%20US%20%7C%20CN%20%7C%20IPO%20%7C%20JP-orange.svg)](#available-toolsets)
 [![Toolsets](https://img.shields.io/badge/Toolsets-23-purple.svg)](docs/toolsets.md)
 
-> One MCP endpoint for Hong Kong, US, A-share, IPO and Japan market data — quotes, order book, K-line, fundamentals, shareholding, IPO, ETF, options, news, reference data and fixed-income services.
+> One MCP endpoint for Hong Kong, US, A-share(Zhcall), IPO and Japan market data — quotes, order book, K-line, fundamentals, shareholding, IPO, ETF, options, news, reference data and fixed-income services.
 
 [English](#english-quick-start) | [中文](#中文快速开始) | [Toolset Reference](docs/toolsets.md) | [Client Setup](docs/clients.md) | [Examples](docs/examples.md)
 
@@ -13,7 +13,7 @@
 
 ## ✨ Features
 
-- 🌏 **Five market categories, one endpoint** — HK, US, CN (A-share), IPO and JP behind a single Streamable HTTP URL. Bond calls use `market=GLOBAL`.
+- 🌏 **Five market categories, one endpoint** — HK, US, CN (A-share(Zhcall)), IPO and JP behind a single Streamable HTTP URL. Bond calls use `market=GLOBAL`.
 - 🧰 **23 toolsets, 86 endpoints** — each toolset takes `{ endpoint, params }`, so the model picks a capability instead of memorising 86 tool names.
 - 🔎 **Self-describing** — `describe_tool` returns parameters, enums, market coverage and capability boundaries on demand, at three levels of detail.
 - 📊 **Depth beyond quotes** — financial statements, shareholding structure, capital flow, position cost, IPO subscription data and OPRA option chains.
