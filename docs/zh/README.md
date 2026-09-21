@@ -13,7 +13,7 @@
 
 FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金融市场数据 MCP 服务。通过 Streamable HTTP 端点，为 AI 模型提供港股、美股、A股（中华通）、日股、IPO 及全球基金数据，覆盖 100 个端点，支持工具自描述能力，让 AI 精准调用所需数据。
 
-业务工具统一返回三态：成功响应包含 `code=0` 和 `resultStatus`，其中 `ok` 表示有数据，`empty` 表示调用成功但无业务数据并附带 `emptyReason`；参数错误和下游故障通过 MCP `isError=true` 返回，错误正文包含 `resultStatus=error`。状态信封不生成 `retrievedAt` 或 `failedAt`，所有工具的成功和错误响应均不返回 `raw` 字段。
+业务工具统一返回三态：成功响应包含 `code=0` 和 `resultStatus`，其中 `ok` 表示有数据，`empty` 表示调用成功但无业务数据并附带 `emptyReason`；参数错误和下游故障通过 MCP `isError=true` 返回，错误正文包含 `resultStatus=error`。
 
 ### 核心能力
 
@@ -44,11 +44,11 @@ FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金
 
 **输入参数**
 
-| 参数           | 类型     | 必填 | 说明                                                                                     |
-| -------------- | -------- | ---- | ---------------------------------------------------------------------------------------- |
-| `toolNames`  | string[] | 二选一 | 需要查询的工具集或端点名称，最多 5 个；优先使用此字段。 |
-| `toolName`   | string   | 二选一 | 单个工具集或端点名称；未填写 toolNames 时使用。 |
-| `detail`     | enum     | 否   | 返回详细程度：`summary` / `params`，默认 `summary`                                 |
+| 参数          | 类型     | 必填   | 说明                                                     |
+| ------------- | -------- | ------ | -------------------------------------------------------- |
+| `toolNames` | string[] | 二选一 | 需要查询的工具集或端点名称，最多 5 个；优先使用此字段。  |
+| `toolName`  | string   | 二选一 | 单个工具集或端点名称；未填写 toolNames 时使用。          |
+| `detail`    | enum     | 否     | 返回详细程度：`summary` / `params`，默认 `summary` |
 
 **使用示例**
 
@@ -84,9 +84,9 @@ FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金
 
 **输入参数**
 
-| 参数         | 类型   | 必填 | 说明                                                                                                                                                       |
-| ------------ | ------ | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `endpoint` | string | 是   | `get_quote` / `get_security_definition` / `get_security_profile` / `search_security`                                                               |
+| 参数         | 类型   | 必填 | 说明                                                                                                                                                                                                           |
+| ------------ | ------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `endpoint` | string | 是   | `get_quote` / `get_security_definition` / `get_security_profile` / `search_security`                                                                                                                   |
 | `params`   | object | 是   | 包含`market`（HK/US/CN/JP/GLOBAL）、`assetType`（stock/etf/index/warrant/bond）、`symbols`（证券代码数组）、`quoteType`（basic=基础行情、extended=扩展行情）、`timeMode`（0=实时、1=延时，默认 0）等 |
 
 日股扩展行情示例：`{"endpoint":"get_quote","params":{"market":"JP","assetType":"stock","symbols":["6758.jp","7203.jp"],"quoteType":"extended","timeMode":0}}`。
@@ -126,9 +126,9 @@ FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金
 
 **输入参数**
 
-| 参数         | 类型   | 必填 | 说明                                                                                                                                                                                                                                                  |
-| ------------ | ------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `endpoint` | string | 是   | `get_kline` / `get_jp_kline` / `get_snapshot_history` |
+| 参数         | 类型   | 必填 | 说明                                                                                                                                                                                                                          |
+| ------------ | ------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `endpoint` | string | 是   | `get_kline` / `get_jp_kline` / `get_snapshot_history`                                                                                                                                                                   |
 | `params`   | object | 是   | `get_kline` 包含 `assetType`（stock/index/bond）、`symbol`、`period`（1m/3m/5m/15m/30m/60m/120m/240m/1d/1w/1mo/1q/1y）、截止日期 `date`、`adjust`（none/forward/backward）、`limit`（默认 100，1~500 的整数）。 |
 
 `get_kline` 的所有周期均接受 `date=YYYY-MM-DD`；分钟 K 也可指定 `YYYY-MM-DD HH:mm:ss`，仅传日期表示截至当天 23:59:59（自然日结束，并非交易所收盘）。HK/US/CN/JP 支持股票和指数，默认 `assetType=stock`；GLOBAL 仅支持债券，默认 `assetType=bond`。CN 日 K 默认 `adjust=forward`，其余默认 `none`；显式指定优先。日期、市场与资产组合、根数在请求执行前校验。
@@ -139,15 +139,15 @@ FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金
 
 **get_jp_kline 参数**
 
-| 参数 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `market` | string enum | 否 | 仅支持 `JP`（日股），默认 JP。 |
-| `date` | string | 否 | 查询日期/时间。K线类型为日周月季年时，时间必须为格式为"yyyy-MM-dd"这种时间格式。K线类型为分K级别时，时间必须为格式为"yyyy-MM-dd HH:mm:ss"这种时间格式 |
-| `limit` | integer | 否 | 查询条数，默认 **20**，范围 1～500 |
-| `symbol` | string | 是 | 单只日股证券代码，例如 `6758.jp`。 |
-| `symbols` | string[] | 否 | 非空批量代码列表，例如 `["6758.jp","7203.jp"]`；同时填写 symbol 时，symbol 须包含在列表中。 |
-| `type` | integer enum | 否 | K线类型：0（日）、1（周）、2（月）、3（季）、4（年）、5（1分）、6（5分）、7（15分）、8（30分）、9（60分）、10（120分）、11（3分）、12（240分）。 |
-| `timeMode` | integer enum | 否 | 0（实时）、1（延时），默认 0。 |
+| 参数         | 类型         | 必填 | 说明                                                                                                                                                  |
+| ------------ | ------------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `market`   | string enum  | 否   | 仅支持`JP`（日股），默认 JP。                                                                                                                       |
+| `date`     | string       | 否   | 查询日期/时间。K线类型为日周月季年时，时间必须为格式为"yyyy-MM-dd"这种时间格式。K线类型为分K级别时，时间必须为格式为"yyyy-MM-dd HH:mm:ss"这种时间格式 |
+| `limit`    | integer      | 否   | 查询条数，默认**20**，范围 1～500                                                                                                               |
+| `symbol`   | string       | 是   | 单只日股证券代码，例如`6758.jp`。                                                                                                                   |
+| `symbols`  | string[]     | 否   | 非空批量代码列表，例如`["6758.jp","7203.jp"]`；同时填写 symbol 时，symbol 须包含在列表中。                                                          |
+| `type`     | integer enum | 否   | K线类型：0（日）、1（周）、2（月）、3（季）、4（年）、5（1分）、6（5分）、7（15分）、8（30分）、9（60分）、10（120分）、11（3分）、12（240分）。      |
+| `timeMode` | integer enum | 否   | 0（实时）、1（延时），默认 0。                                                                                                                        |
 
 ```json
 {"endpoint":"get_jp_kline","params":{"symbol":"6758.jp","symbols":["6758.jp","7203.jp"],"type":11,"limit":20,"timeMode":0}}
@@ -155,21 +155,21 @@ FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金
 
 type 默认 0（日 K）。省略 date 时查询最新 K 线。返回顶层 `meta/format/columns/columnNames/rows`，数据固定为以下 13 列，顺序与表格一致。缺失值保留 `null`，数值及字符串精度保持原值，其余数据字段不返回。单只证券的 meta 包含 symbol、market、period、count；批量按 meta.symbols 顺序拼接记录，meta.rowCounts 对应每只证券的记录数（空结果为 0），meta.count 为总根数。
 
-| 返回字段 | 中文含义 |
-| --- | --- |
-| `amount` | 成交额 |
-| `amountLast` | 总成交额 |
-| `change` | 涨跌额 |
-| `changeRate` | 涨跌幅 |
-| `close` | 收盘价 |
-| `date` | 日期 |
-| `high` | 最高价 |
-| `low` | 最低价 |
-| `open` | 开盘价 |
-| `preClose` | 昨收价 |
-| `turnoverRate` | 换手率 |
-| `volume` | 成交量 |
-| `volumeLast` | 总成交量 |
+| 返回字段         | 中文含义 |
+| ---------------- | -------- |
+| `amount`       | 成交额   |
+| `amountLast`   | 总成交额 |
+| `change`       | 涨跌额   |
+| `changeRate`   | 涨跌幅   |
+| `close`        | 收盘价   |
+| `date`         | 日期     |
+| `high`         | 最高价   |
+| `low`          | 最低价   |
+| `open`         | 开盘价   |
+| `preClose`     | 昨收价   |
+| `turnoverRate` | 换手率   |
+| `volume`       | 成交量   |
+| `volumeLast`   | 总成交量 |
 
 ---
 
@@ -393,9 +393,9 @@ type 默认 0（日 K）。省略 date 时查询最新 K 线。返回顶层 `met
 
 **输入参数**
 
-| 参数         | 类型   | 必填 | 说明                                                                                                                                                  |
-| ------------ | ------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `endpoint` | string | 是   | `get_business_segment` / `get_company_action`                                                                                                     |
+| 参数         | 类型   | 必填 | 说明                                                                                                            |
+| ------------ | ------ | ---- | --------------------------------------------------------------------------------------------------------------- |
+| `endpoint` | string | 是   | `get_business_segment` / `get_company_action`                                                               |
 | `params`   | object | 是   | 包含`market`、`symbol`、`actionType`（dividends/splits/meeting/hold_change/repurchase/share_structure）等 |
 
 **使用示例**
