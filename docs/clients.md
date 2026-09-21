@@ -4,18 +4,18 @@ Connection details, identical for every client:
 
 | | |
 | --- | --- |
-| URL | `http://ai.szfiu.com/api/mcp/v2` |
+| URL | `https://ai.szfiu.com/api/mcp/v2` |
 | Transport | Streamable HTTP |
 | Header | `Authorization: Bearer YOUR_API_KEY` |
 
-Get an API key at http://ai.szfiu.com.
+Get an API key at https://ai.szfiu.com.
 
 ---
 
 ## Claude Code
 
 ```bash
-claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
+claude mcp add --transport http fiu-finance https://ai.szfiu.com/api/mcp/v2 \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -27,6 +27,26 @@ claude mcp list
 
 ## Claude Desktop
 
+For stdio-only clients, use the npm CLI with Node.js 20.18.1 or later:
+
+```json
+{
+  "mcpServers": {
+    "fiu-finance": {
+      "command": "npx",
+      "args": ["-y", "fiu-finance-mcp"],
+      "env": {
+        "FIU_API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+Append CLI options after the package name in `args`, for example `"--debug"`, `"--connect-timeout"`, `"20"`. Run `npx -y fiu-finance-mcp --help` for the full list.
+
+You can also keep using the client's native Streamable HTTP configuration:
+
 Edit `claude_desktop_config.json`:
 
 - macOS — `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -37,7 +57,7 @@ Edit `claude_desktop_config.json`:
   "mcpServers": {
     "fiu-finance": {
       "type": "streamableHttp",
-      "url": "http://ai.szfiu.com/api/mcp/v2",
+      "url": "https://ai.szfiu.com/api/mcp/v2",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -56,7 +76,7 @@ Edit `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (per project):
 {
   "mcpServers": {
     "fiu-finance": {
-      "url": "http://ai.szfiu.com/api/mcp/v2",
+      "url": "https://ai.szfiu.com/api/mcp/v2",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -76,7 +96,7 @@ Edit `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (per project):
       "name": "FIU Finance",
       "type": "streamableHttp",
       "isActive": true,
-      "baseUrl": "http://ai.szfiu.com/api/mcp/v2",
+      "baseUrl": "https://ai.szfiu.com/api/mcp/v2",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -91,7 +111,7 @@ Edit `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (per project):
 | --- | --- |
 | Name | FIU Finance |
 | Type | Streamable HTTP |
-| URL | `http://ai.szfiu.com/api/mcp/v2` |
+| URL | `https://ai.szfiu.com/api/mcp/v2` |
 | Headers | `Authorization=Bearer YOUR_API_KEY` |
 
 ## ChatWise / other MCP clients
@@ -123,7 +143,7 @@ Or call `describe_tool` directly:
 Useful for scripting or verifying a key without a client. Note that Streamable HTTP requires an `initialize` handshake before `tools/call`, so a bare `curl` is only enough to check reachability and auth:
 
 ```bash
-curl -sS -X POST http://ai.szfiu.com/api/mcp/v2 \
+curl -sS -X POST https://ai.szfiu.com/api/mcp/v2 \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -146,7 +166,7 @@ For full request/response cycles from the shell, use the helper scripts shipped 
 | --- | --- | --- |
 | No FIU tools in the session | Client not connected | Recheck the URL and restart the client |
 | `401 缺少认证头` | Header missing | Add `Authorization: Bearer YOUR_API_KEY` |
-| `401 无效的令牌` | Key wrong or expired | Reissue the key at http://ai.szfiu.com |
+| `401 无效的令牌` | Key wrong or expired | Reissue the key at https://ai.szfiu.com |
 | `INVALID_ARGUMENT` / `INVALID_SEMANTIC_INPUT` | Missing or wrong-valued parameter | Read `details.issues`; call `describe_tool` with `detail: "params"` |
 | `INVALID_DOWNSTREAM_ARGS` | Endpoint discriminator missing (`ipoType`, `connectType`, `dataType`, …) | Call `describe_tool` for that endpoint and supply the required field |
 | Empty result set | Market or period not covered for that symbol | Check the toolset's market coverage in [toolsets.md](toolsets.md) |

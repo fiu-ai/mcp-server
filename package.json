@@ -1,0 +1,47 @@
+{
+  "name": "fiu-finance-mcp",
+  "version": "1.0.0",
+  "description": "FIU Finance MCP stdio client for the hosted Streamable HTTP service",
+  "type": "module",
+  "bin": {
+    "fiu-finance-mcp": "bin/fiu-finance-mcp.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node bin/fiu-finance-mcp.js",
+    "check": "node --check bin/fiu-finance-mcp.js && node --check src/cli.js",
+    "test": "node --test",
+    "prepublishOnly": "npm run check && npm test"
+  },
+  "engines": {
+    "node": ">=20.18.1"
+  },
+  "dependencies": {
+    "mcp-remote": "0.14.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szfiu-ai/mcp-server.git"
+  },
+  "homepage": "https://github.com/szfiu-ai/mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/szfiu-ai/mcp-server/issues"
+  },
+  "keywords": [
+    "mcp",
+    "finance",
+    "stocks",
+    "stdio",
+    "streamable-http"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

@@ -4,18 +4,18 @@
 
 | 项目 | 值 |
 | --- | --- |
-| URL | `http://ai.szfiu.com/api/mcp/v2` |
+| URL | `https://ai.szfiu.com/api/mcp/v2` |
 | 传输协议 | Streamable HTTP |
 | 请求头 | `Authorization: Bearer YOUR_API_KEY` |
 
-在 http://ai.szfiu.com 申请 API Key。
+在 https://ai.szfiu.com 申请 API Key。
 
 ---
 
 ## Claude Code
 
 ```bash
-claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
+claude mcp add --transport http fiu-finance https://ai.szfiu.com/api/mcp/v2 \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -27,6 +27,26 @@ claude mcp list
 
 ## Claude Desktop
 
+支持 stdio 的客户端可以通过 npm CLI 接入。需要 Node.js 20.18.1 或更高版本：
+
+```json
+{
+  "mcpServers": {
+    "fiu-finance": {
+      "command": "npx",
+      "args": ["-y", "fiu-finance-mcp"],
+      "env": {
+        "FIU_API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+可在 `args` 的包名后追加 `"--debug"`、`"--connect-timeout"`、`"20"` 等 CLI 参数。完整列表运行 `npx -y fiu-finance-mcp --help` 查看。
+
+也可以继续使用客户端原生的 Streamable HTTP 配置：
+
 编辑 `claude_desktop_config.json`：
 
 - macOS — `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -37,7 +57,7 @@ claude mcp list
   "mcpServers": {
     "fiu-finance": {
       "type": "streamableHttp",
-      "url": "http://ai.szfiu.com/api/mcp/v2",
+      "url": "https://ai.szfiu.com/api/mcp/v2",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -56,7 +76,7 @@ claude mcp list
 {
   "mcpServers": {
     "fiu-finance": {
-      "url": "http://ai.szfiu.com/api/mcp/v2",
+      "url": "https://ai.szfiu.com/api/mcp/v2",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -76,7 +96,7 @@ claude mcp list
       "name": "FIU Finance",
       "type": "streamableHttp",
       "isActive": true,
-      "baseUrl": "http://ai.szfiu.com/api/mcp/v2",
+      "baseUrl": "https://ai.szfiu.com/api/mcp/v2",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -91,7 +111,7 @@ claude mcp list
 | --- | --- |
 | 名称 | FIU Finance |
 | 类型 | Streamable HTTP |
-| URL | `http://ai.szfiu.com/api/mcp/v2` |
+| URL | `https://ai.szfiu.com/api/mcp/v2` |
 | Headers | `Authorization=Bearer YOUR_API_KEY` |
 
 ## ChatWise / 其他 MCP 客户端
@@ -123,7 +143,7 @@ claude mcp list
 适用于脚本调用或在无客户端环境下验证 API Key。注意 Streamable HTTP 协议需要先进行 `initialize` 握手才能调用 `tools/call`，因此普通的 `curl` 仅能验证连通性和鉴权：
 
 ```bash
-curl -sS -X POST http://ai.szfiu.com/api/mcp/v2 \
+curl -sS -X POST https://ai.szfiu.com/api/mcp/v2 \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -146,7 +166,7 @@ curl -sS -X POST http://ai.szfiu.com/api/mcp/v2 \
 | --- | --- | --- |
 | 会话中看不到 FIU 工具 | 客户端未连接 | 重新检查 URL 并重启客户端 |
 | `401 缺少认证头` | 请求头缺失 | 添加 `Authorization: Bearer YOUR_API_KEY` |
-| `401 无效的令牌` | API Key 错误或已过期 | 在 http://ai.szfiu.com 重新申请 |
+| `401 无效的令牌` | API Key 错误或已过期 | 在 https://ai.szfiu.com 重新申请 |
 | `INVALID_ARGUMENT` / `INVALID_SEMANTIC_INPUT` | 参数缺失或取值错误 | 查看 `details.issues`；调用 `describe_tool` 并指定 `detail: "params"` |
 | `INVALID_DOWNSTREAM_ARGS` | 缺少端点判别字段（`ipoType`、`connectType`、`dataType` 等） | 调用 `describe_tool` 查看该端点所需字段 |
 | 返回结果为空 | 该证券不覆盖对应市场或时间段 | 查看 [工具集参考手册](toolsets.md) 中的市场覆盖范围 |

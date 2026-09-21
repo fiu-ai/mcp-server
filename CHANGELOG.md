@@ -2,13 +2,22 @@
 
 All notable changes to the FIU Finance MCP Server are documented here.
 
+## [CLI 1.0.0]
+
+### Added
+
+- Publishable `fiu-finance-mcp` npm CLI for stdio-only MCP clients.
+- API key and remote URL configuration through CLI options or environment variables.
+- Secure temporary header-file forwarding to the hosted Streamable HTTP service.
+- npm/npx setup instructions for Claude Desktop and other stdio clients.
+
 ## [2.0.0]
 
 The MCP surface is consolidated into a single endpoint.
 
 ### Added
 
-- Single Streamable HTTP endpoint `http://ai.szfiu.com/api/mcp/v2` replacing the per-market server URLs.
+- Single Streamable HTTP endpoint `https://ai.szfiu.com/api/mcp/v2` replacing the per-market server URLs.
 - `describe_tool` — returns parameters, enums, market coverage and capability boundaries at three levels of detail (`summary` / `params` / `full`).
 - 23 business toolsets covering 86 endpoints, invoked as `{ endpoint, params }`.
 - Japan (`JP`) and global fixed-income (`GLOBAL`) market coverage.

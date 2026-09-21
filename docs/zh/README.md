@@ -675,10 +675,61 @@ ISIN/SEDOL/CIK 代码查询、货币代码、交易时段、除权日、退市�
 
 ### 前置条件
 
-1. 访问 [ai.szfiu.com](http://ai.szfiu.com) 申请 API Key
-2. 支持 Streamable HTTP 协议的 MCP 客户端
+1. 访问 [ai.szfiu.com](https://ai.szfiu.com) 申请 API Key
+2. HTTP 直连需要支持 Streamable HTTP 协议的 MCP 客户端
+3. npm/npx 接入需要 Node.js 20.18.1 或更高版本
 
-### 配置示例
+### 通过 npm/npx 接入
+
+无需安装即可启动本地 stdio 适配器：
+
+```bash
+# macOS / Linux
+FIU_API_KEY=YOUR_API_KEY npx -y fiu-finance-mcp
+
+# Windows PowerShell
+$env:FIU_API_KEY="YOUR_API_KEY"
+npx -y fiu-finance-mcp
+```
+
+也可以全局安装：
+
+```bash
+npm install -g fiu-finance-mcp
+fiu-finance-mcp --api-key YOUR_API_KEY
+```
+
+Claude Desktop、Cursor 等使用 stdio 的客户端可配置为：
+
+```json
+{
+  "mcpServers": {
+    "fiu-finance": {
+      "command": "npx",
+      "args": ["-y", "fiu-finance-mcp"],
+      "env": {
+        "FIU_API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+CLI 参数：
+
+| 参数 | 说明 |
+| --- | --- |
+| `-k, --api-key <key>` | FIU API Key，优先级高于 `FIU_API_KEY` 环境变量 |
+| `-u, --url <url>` | 覆盖远程 MCP 地址，默认 `https://ai.szfiu.com/api/mcp/v2` |
+| `--header <Name:Value>` | 添加自定义请求头，可重复使用并支持 `${ENV_NAME}` |
+| `--debug` | 启用代理调试日志 |
+| `--silent` | 仅输出错误日志 |
+| `-h, --help` | 显示帮助 |
+| `-v, --version` | 显示 CLI 版本 |
+
+`--connect-timeout`、`--headers-timeout`、`--body-timeout`、`--keep-alive`、`--ping-interval`、`--ipv4` 和 `--ignore-tool` 等参数会传递给底层代理。
+
+### Streamable HTTP 直连
 
 在 MCP 客户端配置文件中添加：
 
@@ -699,7 +750,7 @@ ISIN/SEDOL/CIK 代码查询、货币代码、交易时段、除权日、退市�
 **Claude Code 一行命令接入：**
 
 ```bash
-claude mcp add --transport http fiu-finance http://ai.szfiu.com/api/mcp/v2 \
+claude mcp add --transport http fiu-finance https://ai.szfiu.com/api/mcp/v2 \
   --header "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -713,7 +764,7 @@ API Key 认证：在 HTTP Header 中传入 `Authorization: Bearer YOUR_API_KEY`�
 
 ## 服务端说明
 
-本项目不涉及服务端源码交付或客户侧部署。服务端由深圳市融聚汇信息科技有限公司统一维护和运营。客户通过 API Key 接入后即可使用全部功能。
+本仓库包含 npm CLI 客户端适配层，不包含业务服务端源码。服务端由深圳市融聚汇信息科技有限公司统一维护和运营，客户通过 API Key 接入后即可使用全部功能。
 
 ---
 
@@ -725,7 +776,8 @@ Claude Code、Claude Desktop、Cherry Studio、Cursor、ChatWise 及任何支持
 
 ## 版本信息
 
-v2.0.0
+- MCP 服务：v2.0.0
+- npm CLI：v1.0.0
 
 ---
 
@@ -737,7 +789,7 @@ v2.0.0
 
 ## 服务开通
 
-访问 [http://ai.szfiu.com](http://ai.szfiu.com) 查看定价方案并申请 API Key。
+访问 [https://ai.szfiu.com](https://ai.szfiu.com) 查看定价方案并申请 API Key。
 
 ---
 
