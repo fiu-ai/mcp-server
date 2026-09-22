@@ -13,7 +13,7 @@
 
 FIU Finance MCP Server 是深圳市融聚汇信息科技有限公司推出的金融市场数据 MCP 服务。通过 Streamable HTTP 端点，为 AI 模型提供港股、美股、A股（中华通）、日股、IPO 及全球基金数据，覆盖 100 个端点，支持工具自描述能力，让 AI 精准调用所需数据。
 
-业务工具统一返回三态：成功响应包含 `code=0` 和 `resultStatus`，其中 `ok` 表示有数据，`empty` 表示调用成功但无业务数据并附带 `emptyReason`；参数错误和下游故障通过 MCP `isError=true` 返回，错误正文包含 `resultStatus=error`。状态信封不生成 `retrievedAt` 或 `failedAt`，所有工具的成功和错误响应均不返回 `raw` 字段。
+业务工具统一返回三态：成功响应包含 `code=0` 和 `resultStatus`，其中 `ok` 表示有数据，`empty` 表示调用成功但无业务数据并附带 `emptyReason`；参数错误和下游故障通过 MCP `isError=true` 返回，错误正文包含 `resultStatus=error`。
 
 ### 核心能力
 
