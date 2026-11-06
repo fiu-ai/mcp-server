@@ -15,8 +15,3 @@ Thumbs.db
 # Logs and temp
 *.log
 tmp/
-
-# Node.js
-node_modules/
-.npm-cache/
-*.tgz

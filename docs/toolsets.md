@@ -1,8 +1,8 @@
 # Toolset Reference
 
-23 business toolsets, 86 endpoints, plus `describe_tool`.
+26 business toolsets, 104 endpoints, plus the `describe_tool` and `search` helper tools (28 MCP tools in total).
 
-Every business toolset takes exactly two arguments:
+Most business toolsets take two arguments:
 
 ```json
 {
@@ -11,7 +11,7 @@ Every business toolset takes exactly two arguments:
 }
 ```
 
-`market`, `symbol`, `symbols`, `startDate`, `endDate` and `limit` are shared across toolsets. Anything endpoint-specific — `ipoType`, `connectType`, `dataType`, `holdingType` and so on — goes in `params` alongside them.
+Common field names such as `market`, `symbol`, `symbols`, `date`, `startDate`, `endDate` and `limit` are endpoint-specific: only send fields declared by that endpoint's `describe_tool` result. Anything else — `ipoType`, `connectType`, `dataType`, `holdingType` and so on — also goes in `params` when declared by the endpoint. The flat toolsets `market_overview`, `market_flow`, `market_position_cost`, `shareholding_institution`, `macro_economics` and `company_announcements` expose business fields directly under `arguments`.
 
 Required fields are listed below. For full parameter descriptions, types, defaults and enum semantics, call `describe_tool` with `detail: "params"`.
 
@@ -22,7 +22,7 @@ Required fields are listed below. For full parameter descriptions, types, defaul
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `toolNames` | `string[]` | yes | Up to 5 toolset names, endpoint names or toolset keys |
-| `detail` | `summary` \| `params` \| `full` | no | Default `summary`. `full` expands downstream request bodies and accepts 1 endpoint only |
+| `detail` | `summary` \| `params` | no | Default `summary` returns a compact call contract; `params` adds detailed parameter descriptions and routing requirements |
 
 ```json
 { "toolNames": ["f10_financials", "get_financial_statement"], "detail": "params" }
@@ -62,12 +62,13 @@ K-line, historical snapshots, return series.
 
 | Endpoint | Required |
 | --- | --- |
-| `get_kline` | `assetType` = `stock` \| `etf` \| `index` \| `bond`, `symbol` |
-| `get_latest_kline` | `symbols` |
+| `get_kline` | `assetType` = `stock` \| `index` \| `bond`, `symbol` |
+| `get_jp_kline` | `symbol` or `symbols` (JP only) |
 | `get_snapshot_history` | `market` = `HK` \| `US`, `historyType` = `snapshot`, `symbol` |
 
 `period` for `get_kline`: `1m`, `3m`, `5m`, `15m`, `30m`, `60m`, `120m`, `240m`, `1d`, `1w`, `1mo`, `1q`, `1y`.
 `adjust`: `none` (default), `forward`, `backward`. `limit` defaults to 100, max 500.
+`get_kline` uses `date` as its single cutoff field and `limit` as the number of bars returned before that cutoff. It does not accept `startDate` or `endDate`. Use `YYYY-MM-DD` for daily or longer periods and `YYYY-MM-DD HH:mm:ss` for minute periods.
 
 ### `quote_derivatives_hk` — HK
 
@@ -106,7 +107,10 @@ Stock, industry, ETF, IPO, bond, broker and warrant rankings.
 
 | Endpoint | Required |
 | --- | --- |
-| `get_rankings` | `market` = `HK` \| `US` \| `CN` \| `JP` |
+| `get_hk_ranking` | `rankType` = `stock` \| `industry` \| `ipo` \| `broker` \| `market_premium` |
+| `get_us_ranking` | `rankType` = `stock` \| `industry` \| `ipo` \| `etf` |
+| `get_cn_ranking` | `rankType` = `stock` \| `industry` \| `ipo` |
+| `get_jp_ranking` | `rankType` = `stock` \| `hot_stock` \| `industry` |
 
 ### `market_flow` — HK, US, CN, JP
 
@@ -151,9 +155,9 @@ Returns structured statements, indicators and corporate events. It does not retu
 
 **Filtering by reporting period.** Put `reportType` in `params`. Values differ by market:
 
-- **HK** — `I` half-year, `F` annual, `P` pre-listing, `Q1` / `Q3` / `Q4` / `Q5` quarterly. There is no `Q2`; the vast majority of records are `I` and `F`.
+- **HK** — `F` annual, `I` half-year, `P` pre-listing, `Q1` / `Q2` / `Q3` / `Q4` quarterly.
 - **CN** — integers: `1` Q1, `6` interim, `9` first three quarters, `12` annual, `99` non-standard.
-- **US** — period filtering is not supported; the field is ignored.
+- **US** — `FY` annual, `I1` / `I2` half-year periods, `Q1` / `Q2` / `Q3` / `Q4` quarterly.
 
 ### `f10_business_governance` — HK, US, CN
 
@@ -184,20 +188,32 @@ Returns structured statements, indicators and corporate events. It does not retu
 | Endpoint | Required |
 | --- | --- |
 | `get_broker_holding` | `holdingType` = `ratio` \| `detail` \| `statistics` \| `rank` \| `f10_ratio` |
-| `get_fund_holding` | `holdingType` = `stock_holder` \| `fund_constituent` |
 | `get_short_sell` | — |
 
 ---
 
 ## Funds and Connect
 
-### `fund_etf` — HK, US, JP
+### `fund_data` — Global funds
 
-| Endpoint | Required |
+Fund endpoints do not use `market`, `symbol`, or `dataType`. Use `fund_id` or `fund_class_id`; pagination is `page` (from 0) and `page_size` (maximum 200). Call `search_funds` only when no stable fund identifier is available; once an ID is known, call the target endpoint directly.
+
+| Endpoint | Contract |
 | --- | --- |
-| `get_etf_data` | `dataType` = `list` \| `issuer` (HK only) \| `area` \| `direction` \| `type` \| `constituent` |
-| `get_fund_data` | `dataType` = `value` \| `asset` \| `sector` |
-| `get_fund_performance` | `dataType` = `define` \| `quarter` \| `year` |
+| `search_funds` | `mode` = `search` \| `categories` \| `providers` \| `share_classes`; `share_classes` requires `fund_id` |
+| `get_fund_profile` | one fund reference; `operation` = `default` \| `size` |
+| `get_fund_managers` | one fund reference; `operation` = `current` \| `history` \| `bio` \| `education`; history requires both dates |
+| `get_fund_distributions` | one fund reference plus `start_date` and `end_date` |
+| `get_fund_terms` | one fund reference; `kind` = `fees` \| `constraints` \| `purchase` |
+| `get_fund_nav` | one fund reference; `operation` = `latest` \| `history`; history requires both dates |
+| `get_fund_performance` | one fund reference; `operation` = `latest` \| `custom`; custom requires both dates |
+| `compare_funds` | 2-10 combined `fund_ids` / `fund_class_ids` |
+| `get_fund_risk` | one fund reference; `operation` = `default` \| `rating` \| `debt` |
+| `rank_funds` / `screen_funds` | optional `rank_field` and filters |
+| `get_fund_holdings` | one fund reference; `operation` = `default` \| `top` \| `history`; history requires both dates |
+| `get_fund_exposure` | one fund reference; `operation` = `asset` \| `sector` \| `country` |
+| `get_fund_benchmark` / `get_fund_sales_markets` | one fund reference |
+| `get_country_code` | required `countryName`; accepts Chinese/English names, ISO2, ISO3 and supported aliases |
 
 ### `stock_connect` — HK, CN
 
@@ -220,6 +236,7 @@ Covers IPO, prospectus and filing scenarios only. It is not an announcement sear
 | `get_hk_ipo_calendar` | `ipoType` = `calendar` \| `calendar_detail` |
 | `get_hk_ipo_list` | `ipoType` = `make_new` \| `today` \| `to_be_listed` \| `listed` \| `table` \| `table_detail` |
 | `get_hk_ipo_detail` | `ipoType` = `offering` \| `public_offering` \| `company_info` \| `allocation_top` \| `allocation_bottom` |
+| `get_ipo_profile` | `ipoType` = `profile`, `code` |
 | `get_hk_ipo_company_profile` | `ipoType` = `company_profile` \| `company_profile_new` |
 | `get_hk_ipo_underwriter` | `ipoType` = `underwriter_list` \| `sponsor_list` |
 | `get_hk_ipo_cornerstone_investor` | `ipoType` = `cornerstone_list` \| `cornerstone_rank` |
@@ -270,16 +287,43 @@ Covers news for listed companies. It does not cover exchange filings, disclosure
 
 | Endpoint | Required |
 | --- | --- |
-| `news_latest` | `market` |
-| `news_search` | `market` (`query` searches title, summary and keywords — not article body) |
-| `news_semantic_search` | `market`, `query` |
-| `news_by_symbol` | `market`, `symbol` |
-| `news_get` | `market`, `id` |
-| `news_related` | `market`, `id` |
-| `news_count` | `market` |
-| `news_digest` | `market` |
+| `news_search` | `query` |
+| `news_by_symbol` | `symbol` |
+| `news_latest` | — |
+| `news_get` | `id` |
+| `news_related` | `id` |
+| `news_digest` | — |
 
-`limit` defaults to 10, max 50. `hours` on `news_latest` defaults to 24, max 168.
+`news_search` is semantic search. `limit` defaults to 10, max 50; `hours` on `news_latest` defaults to 24, max 168. Use the endpoint schema for optional date, sorting and relevance fields.
+
+---
+
+## Calendar, macro data and company announcements
+
+### `financial_calendar` — global events
+
+| Endpoint | Required |
+| --- | --- |
+| `search_financial_calendar` | `keyword`, `date` |
+| `get_financial_event_detail` | `id` |
+
+`search_financial_calendar` uses `endDate` for an explicit range, or `direction` and `limit` for a rolling window. It filters with `countryTypes`, `eventTypes`, `markets` and `importanceLevels`, not the securities `market` field.
+
+### `macro_economics` — curated macro series
+
+| Endpoint | Required |
+| --- | --- |
+| `get_macro_overview` | `titleId` |
+
+`titleId` must be one of the values returned by `describe_tool` (10, 20, 30, 40, 50, 60, 70, 80, 90, 100 or 110).
+
+### `company_announcements` — HK, US, CN
+
+| Endpoint | Required |
+| --- | --- |
+| `get_company_announcements` | `market`, `symbols` |
+
+This flat tool uses top-level `arguments` fields. `startDate` and `endDate` are optional. Each announcement stays in the result when an attachment fails; inspect `attachmentStatus`.
 
 ---
 
@@ -302,7 +346,23 @@ Prefer a business toolset when one exists; `reference` is for code mapping and c
 | --- | --- |
 | `market` | `HK`, `US`, `CN` (A-share), `JP`, `GLOBAL` (cross-market, currently fixed income) |
 | `symbol` / `symbols` | Full suffix: `00700.hk`, `AAPL.us`, `600519.sh`, `000001.sz`, `6758.jp`; bonds accept an ISIN |
-| `startDate` / `endDate` / `date` | `YYYY-MM-DD`; minute-level K-line, ticks and intraday use `YYYY-MM-DD HH:mm:ss` |
+| Date/time fields | Field names are endpoint-specific. Use `describe_tool`; `get_kline` accepts only cutoff `date`, not `startDate`/`endDate` |
 | `limit` | Meaning and ceiling vary by endpoint — see `describe_tool` |
 
 Do not put `endpoint`, `token` or `Authorization` inside `params`.
+
+## Connection baseline
+
+- HTTPS endpoint: `https://ai.szfiu.com/api/mcp/v2`
+- HTTP header: `Authorization: Bearer YOUR_API_KEY`
+- npm/npx stdio adapter: `npx -y fiu-finance-mcp` with Node.js 20.18.1 or newer and `FIU_API_KEY`
+
+## Error codes
+
+| Code | Meaning | Fix |
+| --- | --- | --- |
+| `INVALID_ARGUMENT` | Type or enum mismatch | Check the value against `describe_tool detail=params` |
+| `INVALID_SEMANTIC_INPUT` | A required discriminator is missing | Add the missing `*Type` field |
+| `INVALID_DOWNSTREAM_ARGS` | Parameter combination rejected downstream | Check field co-dependencies |
+| `UNSUPPORTED_ROUTE` | This market does not support the endpoint | Switch market or use the market-specific endpoint |
+| `DOWNSTREAM_NETWORK_ERROR` | Upstream data source unreachable | Retry; if persistent, keep the `requestId` and open an issue |

@@ -1,6 +1,6 @@
 # Examples
 
-Every call below is `toolset` + `{ endpoint, params }`. Copy the JSON into the tool arguments.
+Most calls below are `toolset` + `{ endpoint, params }`. The flat tools `market_overview`, `market_flow`, `market_position_cost`, `shareholding_institution`, `macro_economics` and `company_announcements` keep business fields directly under `arguments`.
 
 Field names, enums and market coverage come from `describe_tool`; when an example does not fit your case, ask the server rather than guessing.
 
@@ -80,9 +80,8 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 `market_ranking`
 ```json
 {
-  "endpoint": "get_rankings",
+  "endpoint": "get_hk_ranking",
   "params": {
-    "market": "HK",
     "rankType": "stock",
     "sortField": "changeRate",
     "sortType": 1,
@@ -91,9 +90,9 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 }
 ```
 
-`sortType`: `1` descending (default), `0` ascending. `rankType`: `stock`, `industry`, `ipo`, `broker`, `market_premium`, `etf`, `hot_stock`.
+`sortType`: `1` descending (default), `0` ascending. `rankType` is market-specific: HK uses `stock`, `industry`, `ipo`, `broker`, `market_premium`; US uses `stock`, `industry`, `ipo`, `etf`; CN uses `stock`, `industry`, `ipo`; JP uses `stock`, `hot_stock`, `industry`.
 
-**Current capital flow (A-share(Zhcall))**
+**Current capital flow (A-share)**
 
 `market_flow`
 ```json
@@ -105,7 +104,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 `flowType`: `current`, `daily`, `distribution`, `index_distribution`, `totalview`.
 
-**Industry list (A-share(Zhcall))**
+**Industry list (A-share)**
 
 `market_structure`
 ```json
@@ -128,7 +127,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 ## Fundamentals
 
-**Company profile (A-share(Zhcall))**
+**Company profile (A-share)**
 
 `f10_profile`
 ```json
@@ -148,7 +147,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 }
 ```
 
-**Annual balance sheet (A-share(Zhcall))**
+**Annual balance sheet (A-share)**
 
 `f10_financials`
 ```json
@@ -158,9 +157,9 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 }
 ```
 
-`reportType` encoding differs by market — HK uses letters, A-share(Zhcall) uses integers, US ignores the field. See [toolsets.md](toolsets.md#f10_financials--hk-us-cn).
+`reportType` encoding differs by market — HK and US use market-specific strings, while A-share uses integers. See [toolsets.md](toolsets.md#f10_financials--hk-us-cn).
 
-**Financial indicators (A-share(Zhcall))**
+**Financial indicators (A-share)**
 
 `f10_financials`
 ```json
@@ -181,7 +180,7 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 ## Shareholding
 
-**Major shareholders (HK) / top ten (A-share(Zhcall))**
+**Major shareholders (HK) / top ten (A-share)**
 
 `shareholding_structure`
 ```json
@@ -217,18 +216,25 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 ## Funds, IPO, bonds, reference
 
-**ETF issuers (HK)**
+**Search funds**
 
-`fund_etf`
+`fund_data`
 ```json
-{ "endpoint": "get_etf_data", "params": { "market": "HK", "dataType": "issuer" } }
+{ "endpoint": "search_funds", "params": { "query": "DRAM", "page": 0, "page_size": 10 } }
 ```
 
-**Fund NAV (HK)**
+**Complete latest fund holdings**
 
-`fund_etf`
+`fund_data`
 ```json
-{ "endpoint": "get_fund_data", "params": { "market": "HK", "symbol": "02800.hk", "dataType": "value" } }
+{ "endpoint": "get_fund_holdings", "params": { "fund_id": "FS0000KKSG", "operation": "default", "page": 0, "page_size": 200 } }
+```
+
+**Resolve a country name to ISO codes**
+
+`fund_data`
+```json
+{ "endpoint": "get_country_code", "params": { "countryName": "美国" } }
 ```
 
 **Upcoming HK listings**
@@ -263,13 +269,27 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 
 `fiu_news`
 ```json
-{ "endpoint": "news_latest",          "params": { "market": "HK", "limit": 5 } }
-{ "endpoint": "news_search",          "params": { "market": "CN", "query": "新能源", "limit": 10 } }
-{ "endpoint": "news_by_symbol",       "params": { "market": "HK", "symbol": "00700.hk", "limit": 10 } }
-{ "endpoint": "news_semantic_search", "params": { "market": "US", "query": "AI chip demand", "limit": 10 } }
+{ "endpoint": "news_latest",    "params": { "limit": 5 } }
+{ "endpoint": "news_search",    "params": { "query": "新能源", "limit": 10 } }
+{ "endpoint": "news_by_symbol", "params": { "symbol": "00700.hk", "limit": 10 } }
+{ "endpoint": "news_digest",    "params": { "symbol": "AAPL.us", "limit": 10 } }
 ```
 
-`news_search` matches title, summary and keywords — not the article body. Use `news_semantic_search` for descriptive queries.
+`news_search` is semantic search. `news_digest` returns `content_preview` for summarization rather than the full article body.
+
+## Calendar, macro data and company announcements
+
+```json
+{ "endpoint": "search_financial_calendar", "params": { "keyword": "nonfarm payrolls", "date": "2026-10-09" } }
+{ "endpoint": "get_financial_event_detail", "params": { "id": "<calendar-event-id>" } }
+```
+
+The flat tools `macro_economics` and `company_announcements` keep business fields directly under `arguments`:
+
+```json
+{ "endpoint": "get_macro_overview", "titleId": 10 }
+{ "endpoint": "get_company_announcements", "market": "HK", "symbols": ["00700.hk"] }
+```
 
 ---
 
@@ -278,12 +298,10 @@ Field names, enums and market coverage come from `describe_tool`; when an exampl
 ```json
 { "toolNames": ["ipo"], "detail": "summary" }
 { "toolNames": ["get_hk_ipo_margin_info"], "detail": "params" }
-{ "toolNames": ["get_hk_ipo_margin_info"], "detail": "full" }
 ```
 
 - `summary` — one-line purpose, market coverage and boundaries. Up to 5 names per call.
 - `params` — parameters, types, enums, required flags. Up to 5 names per call.
-- `full` — expands the downstream request body. One endpoint per call; use it when a call keeps failing validation.
 
 ---
 

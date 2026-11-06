@@ -25,9 +25,15 @@ Verify:
 claude mcp list
 ```
 
-## Claude Desktop
+## npm/npx stdio adapter
 
-For stdio-only clients, use the npm CLI with Node.js 20.18.1 or later:
+The published `fiu-finance-mcp` package starts a local stdio adapter and forwards requests to the same remote service. Use Node.js 20.18.1 or newer:
+
+```bash
+FIU_API_KEY=YOUR_API_KEY npx -y fiu-finance-mcp
+```
+
+For a client configuration:
 
 ```json
 {
@@ -35,17 +41,15 @@ For stdio-only clients, use the npm CLI with Node.js 20.18.1 or later:
     "fiu-finance": {
       "command": "npx",
       "args": ["-y", "fiu-finance-mcp"],
-      "env": {
-        "FIU_API_KEY": "YOUR_API_KEY"
-      }
+      "env": { "FIU_API_KEY": "YOUR_API_KEY" }
     }
   }
 }
 ```
 
-Append CLI options after the package name in `args`, for example `"--debug"`, `"--connect-timeout"`, `"20"`. Run `npx -y fiu-finance-mcp --help` for the full list.
+`fiu-finance-mcp --api-key YOUR_API_KEY` overrides `FIU_API_KEY`; `--url` overrides the default HTTPS endpoint. Use this mode for clients that do not support remote Streamable HTTP.
 
-You can also keep using the client's native Streamable HTTP configuration:
+## Claude Desktop
 
 Edit `claude_desktop_config.json`:
 
@@ -122,7 +126,7 @@ Any client that supports Streamable HTTP with custom headers works. Point it at 
 
 ## Verify the connection
 
-Once connected, the client should list **24 tools**: `describe_tool` plus 23 business toolsets.
+Once connected, the client should list **28 tools**: `describe_tool`, `search` and 26 business toolsets. A deployed server can differ; verify with `tools/list`.
 
 Ask the model:
 
@@ -166,8 +170,8 @@ For full request/response cycles from the shell, use the helper scripts shipped 
 | --- | --- | --- |
 | No FIU tools in the session | Client not connected | Recheck the URL and restart the client |
 | `401 缺少认证头` | Header missing | Add `Authorization: Bearer YOUR_API_KEY` |
-| `401 无效的令牌` | Key wrong or expired | Reissue the key at https://ai.szfiu.com |
+| `401 无效的令牌` | Key wrong or expired | Reissue the key at https://ai.szfiu.com; for stdio also check `FIU_API_KEY` or `--api-key` |
 | `INVALID_ARGUMENT` / `INVALID_SEMANTIC_INPUT` | Missing or wrong-valued parameter | Read `details.issues`; call `describe_tool` with `detail: "params"` |
 | `INVALID_DOWNSTREAM_ARGS` | Endpoint discriminator missing (`ipoType`, `connectType`, `dataType`, …) | Call `describe_tool` for that endpoint and supply the required field |
-| Empty result set | Market or period not covered for that symbol | Check the toolset's market coverage in [toolsets.md](toolsets.md) |
+| `resultStatus=empty` | Query succeeded but returned no business records | Inspect `emptyReason`; adjust the symbol, filters or date range. This is not a transport failure |
 | `DOWNSTREAM_NETWORK_ERROR` | Upstream data service unreachable | Report the `requestId` from the error payload |
