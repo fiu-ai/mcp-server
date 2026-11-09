@@ -64,6 +64,16 @@ FIU_API_KEY=YOUR_API_KEY npx -y fiu-finance-mcp
 
 For a client configuration, use `command: "npx"`, `args: ["-y", "fiu-finance-mcp"]`, and pass `FIU_API_KEY` in `env`. The `--api-key` flag overrides the environment variable; `--url` can override the default HTTPS endpoint.
 
+### 2b. Use the DeepSeek Harness bundle
+
+This repository also ships a DeepSeek Harness bundle that injects the same stdio adapter through `@deepseek-ai/dsh-mcp-client`:
+
+```bash
+dsh plugin --profile web add github:fiu-ai/mcp-server#path:plugins/fiu-finance-mcp-dsh
+```
+
+Set `FIU_API_KEY` before starting or restarting DeepSeek Harness. The bundle exposes the current FIU catalog of 26 business toolsets, 104 endpoints and 28 MCP tools. Details are in [plugins/fiu-finance-mcp-dsh/README.md](plugins/fiu-finance-mcp-dsh/README.md).
+
 ### 3. Start asking
 
 ```text

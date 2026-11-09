@@ -1,0 +1,18 @@
+# Mount the hosted FIU Finance MCP service in DeepSeek Harness through the
+# published stdio adapter. The adapter forwards MCP traffic to the HTTPS
+# endpoint and exposes the service's 28 MCP tools to the current profile.
+- insert:
+    - id: mcp-fiu-finance
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: fiu-finance
+        transport: stdio
+        command: npx
+        args:
+          - --yes
+          - fiu-finance-mcp@1.0.0
+        env:
+          FIU_API_KEY: !!js process.env.FIU_API_KEY ?? ''
+          FIU_MCP_URL: !!js process.env.FIU_MCP_URL ?? ''
+        toolCallTimeoutMs: 180000
+        failOnStartupError: false

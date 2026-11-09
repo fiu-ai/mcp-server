@@ -26,11 +26,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/szfiu-ai/mcp-server.git"
+    "url": "git+https://github.com/fiu-ai/mcp-server.git"
   },
-  "homepage": "https://github.com/szfiu-ai/mcp-server#readme",
+  "homepage": "https://github.com/fiu-ai/mcp-server#readme",
   "bugs": {
-    "url": "https://github.com/szfiu-ai/mcp-server/issues"
+    "url": "https://github.com/fiu-ai/mcp-server/issues"
   },
   "keywords": [
     "mcp",

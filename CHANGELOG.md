@@ -4,6 +4,7 @@ All notable changes to the FIU Finance MCP Server are documented here.
 
 ## [Unreleased]
 
+- Added the `plugins/fiu-finance-mcp-dsh` DeepSeek Harness bundle. It mounts the published `fiu-finance-mcp@1.0.0` through `@deepseek-ai/dsh-mcp-client` and forwards `FIU_API_KEY` to the hosted HTTPS MCP service.
 - Synchronized the published documentation with the 2026-10-23 product-manual baseline: 26 business toolsets, 104 endpoints and 28 MCP tools including `describe_tool` and `search`.
 - Added documentation for `financial_calendar`, `macro_economics` and `company_announcements`.
 - Updated market-specific ranking endpoints, the JP K-line endpoint, the current six-endpoint news surface, HTTPS examples and the npm/npx stdio adapter.

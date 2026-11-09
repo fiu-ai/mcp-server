@@ -1,0 +1,30 @@
+{
+  "name": "fiu-finance-mcp-dsh",
+  "version": "0.1.0",
+  "description": "Connect DeepSeek Harness to FIU Finance MCP through an MCP stdio client.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fiu-ai/mcp-server.git",
+    "directory": "plugins/fiu-finance-mcp-dsh"
+  },
+  "homepage": "https://github.com/fiu-ai/mcp-server/tree/main/plugins/fiu-finance-mcp-dsh",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "mcp",
+    "finance",
+    "market"
+  ],
+  "files": [
+    "package.json",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
