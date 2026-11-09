@@ -1,6 +1,6 @@
 {
   "name": "fiu-finance-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "FIU Finance MCP stdio client for the hosted Streamable HTTP service",
   "type": "module",
   "bin": {

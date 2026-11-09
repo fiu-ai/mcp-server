@@ -10,7 +10,7 @@
         command: npx
         args:
           - --yes
-          - fiu-finance-mcp@1.0.0
+          - fiu-finance-mcp@1.0.1
         env:
           FIU_API_KEY: !!js process.env.FIU_API_KEY ?? ''
           FIU_MCP_URL: !!js process.env.FIU_MCP_URL ?? ''
