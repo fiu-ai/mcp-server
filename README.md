@@ -4,6 +4,7 @@
 [![MCP](<https://img.shields.io/badge/MCP-Streamable%20HTTP-green.svg>)](https://modelcontextprotocol.io)
 [![Markets](<https://img.shields.io/badge/Markets-HK%20%7C%20US%20%7C%20CN%20%7C%20IPO%20%7C%20JP-orange.svg>)](#available-toolsets)
 [![Toolsets](https://img.shields.io/badge/Toolsets-26-purple.svg)](docs/toolsets.md)
+[![Listed on deepseek-plugin.org](https://img.shields.io/badge/listed_on-deepseek--plugin.org-007EC6)](https://deepseek-plugin.org/plugins/liustack/modlens)
 
 > Provided by Rongjuhui, a financial information provider.Access global market quotes, news, and financial data covering Hong Kong stocks, US stocks, A-shares (China Connect), Japanese stocks, global indices, funds, and bonds. Supported data includes quotes and order books, candlestick and intraday charts, fund flow analysis, industries, concepts and investment themes, financials, financial reports, announcement feeds, corporate actions, share capital and shareholders, valuations, research reports, ETF NAVs and holdings, IPOs, bonds, options, financial news, investment and economic calendars, macroeconomic data, and searches for global security codes and international identifiers.
 
