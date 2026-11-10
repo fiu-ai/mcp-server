@@ -36,7 +36,7 @@ The child process receives only the explicitly configured FIU variables. The API
 
 - If the FIU tools do not appear, confirm `npx --version`, `FIU_API_KEY`, and the active profile.
 - Reload the plugin or restart DeepSeek Harness after changing environment variables.
-- The bundle uses the published `fiu-finance-mcp@1.0.0`; update `cordis.patch.yml` when a newer adapter release is ready.
+- The bundle uses the published `fiu-finance-mcp@1.0.1`; update `cordis.patch.yml` when a newer adapter release is ready.
 - The remote service requires `Authorization: Bearer <API_KEY>` and may return no business rows with a successful `resultStatus=empty` response.
 
 ## License
