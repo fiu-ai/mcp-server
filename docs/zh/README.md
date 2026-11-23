@@ -799,6 +799,16 @@ MCP Streamable HTTP 协议
 
 ---
 
+## 隐私与服务条款
+
+- [隐私政策](https://github.com/fiu-ai/mcp-server/blob/main/PRIVACY.md)
+- [服务条款](https://github.com/fiu-ai/mcp-server/blob/main/TERMS.md)
+- 支持、数据权利及账号注销：<rudy@szfiu.com>
+
+上述政策适用于 FIU 托管服务；本仓库代码的 MIT 许可证不授予对托管服务或第三方金融数据的无限制使用权。
+
+---
+
 ## 开源协议
 
 MIT

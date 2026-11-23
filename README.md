@@ -243,7 +243,12 @@ Built and operated by **深圳市融聚汇信息科技有限公司** (Shenzhen R
 - Service: https://ai.szfiu.com
 - MCP endpoint: `https://ai.szfiu.com/api/mcp/v2`
 - Issues: use the [issue templates](.github/ISSUE_TEMPLATE)
+- Support / 支持: <rudy@szfiu.com>
+- [Privacy Policy / 隐私政策](https://github.com/fiu-ai/mcp-server/blob/main/PRIVACY.md)
+- [Terms of Service / 服务条款](https://github.com/fiu-ai/mcp-server/blob/main/TERMS.md)
 
 ## 📄 License
 
 [MIT](LICENSE)
+
+The MIT license covers this repository's code. Hosted FIU service access and financial data use are governed by the [Terms of Service](https://github.com/fiu-ai/mcp-server/blob/main/TERMS.md).
